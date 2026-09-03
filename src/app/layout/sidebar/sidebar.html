@@ -1,0 +1,98 @@
+<aside class="sidebar">
+
+  <!-- Brand -->
+  <div class="brand">
+
+    <div class="brand-icon">
+      ₹
+    </div>
+
+    <span class="brand-name">
+      Salary Management
+    </span>
+
+  </div>
+
+
+  <!-- Navigation -->
+  <nav class="navigation">
+
+    <div class="navigation-section">
+
+      <span class="section-title">
+        MENU
+      </span>
+
+      @for (item of navigationItems; track item.route) {
+
+        <a
+          class="navigation-item"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+
+          <span class="navigation-icon">
+            {{ item.icon }}
+          </span>
+
+          <span class="navigation-label">
+            {{ item.label }}
+          </span>
+
+        </a>
+
+      }
+
+    </div>
+
+
+    <div class="navigation-section">
+
+      <span class="section-title">
+        SYSTEM
+      </span>
+
+      @for (item of settingsItems; track item.route) {
+
+        <a
+          class="navigation-item"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+        >
+
+          <span class="navigation-icon">
+            {{ item.icon }}
+          </span>
+
+          <span class="navigation-label">
+            {{ item.label }}
+          </span>
+
+        </a>
+
+      }
+
+    </div>
+
+  </nav>
+
+
+  <!-- Bottom -->
+  <div class="sidebar-footer">
+
+    <button class="theme-button">
+
+      <span class="navigation-icon">
+        ◐
+      </span>
+
+      <span>
+        Appearance
+      </span>
+
+    </button>
+
+  </div>
+
+</aside>

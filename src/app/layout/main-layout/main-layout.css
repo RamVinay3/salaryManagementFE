@@ -1,0 +1,30 @@
+:host {
+  display: block;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+  margin-left: var(--sidebar-width);
+}
+
+.content {
+  min-height: calc(100vh - var(--topbar-height));
+  padding: 1.5rem;
+}
+
+@media (max-width: 48rem) {
+  .main-area {
+    margin-left: 0;
+  }
+
+  .content {
+    padding: 1.25rem 1rem;
+  }
+}

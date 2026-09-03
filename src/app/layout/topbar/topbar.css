@@ -1,0 +1,156 @@
+:host {
+  display: block;
+}
+
+.topbar {
+  position: fixed;
+
+  top: 0;
+  right: 0;
+  left: var(--sidebar-width);
+
+  height: var(--topbar-height);
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 1.5rem;
+
+  background: var(--color-surface);
+
+  border-bottom: 0.0625rem solid var(--color-border);
+
+  z-index: 90;
+}
+
+/* ============================================
+   Menu
+   ============================================ */
+
+.menu-button {
+  width: 2.25rem;
+  height: 2.25rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+
+  color: var(--color-text-secondary);
+
+  border-radius: var(--radius-md);
+
+  font-size: 1.125rem;
+}
+
+.menu-button:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.topbar-spacer {
+  flex: 1;
+}
+
+/* ============================================
+   Notification
+   ============================================ */
+
+.notification-button {
+  position: relative;
+
+  width: 2.25rem;
+  height: 2.25rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 1.25rem;
+
+  background: transparent;
+
+  color: var(--color-text-secondary);
+
+  border-radius: var(--radius-md);
+
+  font-size: 1.125rem;
+}
+
+.notification-button:hover {
+  background: var(--color-surface-hover);
+}
+
+.notification-dot {
+  position: absolute;
+
+  top: 0.4375rem;
+  right: 0.4375rem;
+
+  width: 0.375rem;
+  height: 0.375rem;
+
+  background: var(--color-danger);
+
+  border: 0.125rem solid var(--color-surface);
+
+  border-radius: 50%;
+}
+
+/* ============================================
+   Profile
+   ============================================ */
+
+.profile {
+  display: flex;
+  align-items: center;
+
+  gap: 0.625rem;
+
+  padding-left: 1rem;
+
+  border-left: 0.0625rem solid var(--color-border);
+}
+
+.avatar {
+  width: 2.125rem;
+  height: 2.125rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--color-primary);
+
+  color: white;
+
+  border-radius: 50%;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  color: var(--color-text);
+
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.profile-role {
+  color: var(--color-text-secondary);
+
+  font-size: 0.6875rem;
+}
+
+.profile-arrow {
+  margin-left: 0.25rem;
+
+  color: var(--color-text-secondary);
+}
