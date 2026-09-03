@@ -1,0 +1,371 @@
+<section class="employees-page">
+
+  <!-- Page Header -->
+
+  <header class="page-header">
+
+    <div class="page-title">
+
+      <h1>Employees</h1>
+
+      <p>
+        Manage employee information and salary details.
+      </p>
+
+    </div>
+
+    <button
+      class="primary-button"
+      type="button"
+    >
+      <span class="button-icon">+</span>
+      Add Employee
+    </button>
+
+  </header>
+
+
+  <!-- Employee Directory -->
+
+  <app-card>
+
+    <!-- Toolbar -->
+
+    <div class="toolbar">
+
+      <!-- Search -->
+
+      <div class="search-container">
+
+        <span class="search-icon">
+          ⌕
+        </span>
+
+        <input
+          type="search"
+          placeholder="Search employees..."
+          [value]="searchTerm()"
+          (input)="setSearch($event)"
+        />
+
+      </div>
+
+
+      <!-- Filters -->
+
+      <div class="filters">
+
+        <select
+          [value]="selectedDepartment()"
+          (change)="setDepartment($event)"
+          aria-label="Filter by department"
+        >
+
+          <option value="All">
+            All Departments
+          </option>
+
+          @for (
+            department of departments();
+            track department
+          ) {
+
+            <option [value]="department">
+              {{ department }}
+            </option>
+
+          }
+
+        </select>
+
+
+        <select
+          [value]="selectedStatus()"
+          (change)="setStatus($event)"
+          aria-label="Filter by status"
+        >
+
+          <option value="All">
+            All Status
+          </option>
+
+          <option value="Active">
+            Active
+          </option>
+
+          <option value="Inactive">
+            Inactive
+          </option>
+
+        </select>
+
+
+        @if (
+          searchTerm() ||
+          selectedDepartment() !== 'All' ||
+          selectedStatus() !== 'All'
+        ) {
+
+          <button
+            class="clear-button"
+            type="button"
+            (click)="clearFilters()"
+          >
+            Clear
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- Results Summary -->
+
+    <div class="results-summary">
+
+      <span>
+
+        @if (filteredEmployees().length === 1) {
+          1 employee found
+        } @else {
+          {{ filteredEmployees().length }} employees found
+        }
+
+      </span>
+
+    </div>
+
+
+    <!-- Table -->
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Employee</th>
+
+            <th>Department</th>
+
+            <th>Designation</th>
+
+            <th>Salary</th>
+
+            <th>Status</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          @if (paginatedEmployees().length > 0) {
+
+            @for (
+              employee of paginatedEmployees();
+              track employee.id
+            ) {
+
+              <tr>
+
+                <!-- Employee -->
+
+                <td>
+
+                  <div class="employee-cell">
+
+                    <div class="employee-avatar">
+                      {{ getInitials(employee.name) }}
+                    </div>
+
+                    <div class="employee-info">
+
+                      <strong>
+                        {{ employee.name }}
+                      </strong>
+
+                      <span>
+                        {{ employee.id }}
+                      </span>
+
+                      <span>
+                        {{ employee.email }}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <!-- Department -->
+
+                <td>
+
+                  <span class="department">
+                    {{ employee.department }}
+                  </span>
+
+                </td>
+
+
+                <!-- Designation -->
+
+                <td>
+                  {{ employee.designation }}
+                </td>
+
+
+                <!-- Salary -->
+
+                <td>
+
+                  <strong class="salary">
+                    {{ formatSalary(employee.salary) }}
+                  </strong>
+
+                </td>
+
+
+                <!-- Status -->
+
+                <td>
+
+                  <span
+                    class="status"
+                    [class.inactive]="employee.status === 'Inactive'"
+                  >
+                    {{ employee.status }}
+                  </span>
+
+                </td>
+
+
+                <!-- Action -->
+
+                <td>
+
+                  <button
+                    class="view-button"
+                    type="button"
+                  >
+                    View
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          } @else {
+
+            <tr>
+
+              <td
+                colspan="6"
+                class="empty-state"
+              >
+
+                <div class="empty-icon">
+                  ⌕
+                </div>
+
+                <strong>
+                  No employees found
+                </strong>
+
+                <span>
+                  Try changing your search or filters.
+                </span>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- Pagination -->
+
+    <div class="pagination">
+
+      <span class="pagination-info">
+
+        Showing
+        <strong>
+          {{ startRecord() }}
+        </strong>
+        -
+        <strong>
+          {{ endRecord() }}
+        </strong>
+        of
+        <strong>
+          {{ filteredEmployees().length }}
+        </strong>
+
+      </span>
+
+
+      <div class="pagination-controls">
+
+        <button
+          type="button"
+          class="page-button"
+          [disabled]="currentPage() === 1"
+          (click)="goToPage(currentPage() - 1)"
+        >
+          ←
+        </button>
+
+
+        @for (
+          page of [].constructor(totalPages());
+          let index = $index;
+          track index
+        ) {
+
+          <button
+            type="button"
+            class="page-button"
+            [class.active]="currentPage() === index + 1"
+            (click)="goToPage(index + 1)"
+          >
+            {{ index + 1 }}
+          </button>
+
+        }
+
+
+        <button
+          type="button"
+          class="page-button"
+          [disabled]="currentPage() === totalPages()"
+          (click)="goToPage(currentPage() + 1)"
+        >
+          →
+        </button>
+
+      </div>
+
+    </div>
+
+  </app-card>
+
+</section>
