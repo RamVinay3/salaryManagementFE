@@ -47,6 +47,40 @@
 }
 
 /* ============================================
+   Dark Theme
+   ============================================ */
+
+[data-theme="dark"] {
+  /* Primary */
+  --color-primary: #3b82f6;
+  --color-primary-hover: #60a5fa;
+  --color-primary-soft: #1e3a5f;
+
+  /* Secondary */
+  --color-secondary: #94a3b8;
+
+  /* Semantic */
+  --color-success: #22c55e;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+
+  /* Background */
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-surface-hover: #334155;
+
+  /* Text */
+  --color-text: #f8fafc;
+  --color-text-secondary: #94a3b8;
+
+  /* Border */
+  --color-border: #334155;
+
+  /* Shadows */
+  --shadow-sm: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
+}
+/* ============================================
    Reset
    ============================================ */
 
@@ -115,4 +149,18 @@ button {
 
 ::-webkit-scrollbar-track {
   background: transparent;
+}
+
+body,
+.sidebar,
+.topbar,
+.placeholder-card,
+.navigation-item,
+.theme-button,
+.menu-button,
+.notification-button {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
 }

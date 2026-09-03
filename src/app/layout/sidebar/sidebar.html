@@ -81,18 +81,22 @@
   <!-- Bottom -->
   <div class="sidebar-footer">
 
-    <button class="theme-button">
+  <button
+    class="theme-button"
+    type="button"
+    (click)="toggleTheme()"
+  >
 
-      <span class="navigation-icon">
-        ◐
-      </span>
+    <span class="navigation-icon">
+      {{ theme() === 'light' ? '☾' : '☀' }}
+    </span>
 
-      <span>
-        Appearance
-      </span>
+    <span>
+      {{ theme() === 'light' ? 'Dark mode' : 'Light mode' }}
+    </span>
 
-    </button>
+  </button>
 
-  </div>
+</div>
 
 </aside>

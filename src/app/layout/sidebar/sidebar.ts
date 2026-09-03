@@ -1,5 +1,10 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import {
+  RouterLink,
+  RouterLinkActive
+} from '@angular/router';
+
+import { ThemeService } from '../../core/services/theme';
 
 interface NavigationItem {
   label: string;
@@ -18,6 +23,12 @@ interface NavigationItem {
   styleUrl: './sidebar.css'
 })
 export class Sidebar {
+
+  private readonly themeService =
+    inject(ThemeService);
+
+  readonly theme =
+    this.themeService.theme;
 
   navigationItems: NavigationItem[] = [
     {
@@ -49,4 +60,8 @@ export class Sidebar {
       route: '/settings'
     }
   ];
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+  }
 }
