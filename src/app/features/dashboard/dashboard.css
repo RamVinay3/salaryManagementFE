@@ -1,9 +1,22 @@
+:host {
+  display: block;
+}
+
 .dashboard {
+  width: 100%;
   max-width: 100rem;
   margin: 0 auto;
 }
 
+/* ============================================
+   Page Header
+   ============================================ */
+
 .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
   margin-bottom: 1.5rem;
 }
 
@@ -22,52 +35,561 @@
   font-size: 0.875rem;
 }
 
-.placeholder-card {
-  min-height: 18.75rem;
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+.primary-button,
+.secondary-button {
+  min-height: 2.5rem;
+
+  padding: 0.625rem 1rem;
+
+  border-radius: var(--radius-md);
+
+  font-size: 0.8125rem;
+  font-weight: 600;
+
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.primary-button {
+  background: var(--color-primary);
+  color: white;
+}
+
+.primary-button:hover {
+  background: var(--color-primary-hover);
+}
+
+.secondary-button {
+  background: var(--color-surface);
+
+  color: var(--color-text);
+
+  border: 0.0625rem solid var(--color-border);
+}
+
+.secondary-button:hover {
+  background: var(--color-surface-hover);
+}
+
+/* ============================================
+   Statistics
+   ============================================ */
+
+.stats-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 1rem;
+
+  margin-bottom: 1rem;
+}
+
+.stat-card {
+  min-height: 8.75rem;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  background: var(--color-surface);
-
-  border: 0.0625rem solid var(--color-border);
-
-  border-radius: var(--radius-lg);
-
-  box-shadow: var(--shadow-sm);
-
-  text-align: center;
+  justify-content: space-between;
 }
 
-.placeholder-icon {
-  width: 3.5rem;
-  height: 3.5rem;
+.stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-icon {
+  width: 2.5rem;
+  height: 2.5rem;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin-bottom: 1rem;
-
   background: var(--color-primary-soft);
+
   color: var(--color-primary);
 
-  border-radius: 50%;
-
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.placeholder-card h2 {
-  color: var(--color-text);
+  border-radius: var(--radius-md);
 
   font-size: 1.125rem;
 }
 
-.placeholder-card p {
+.stat-change {
+  padding: 0.25rem 0.5rem;
+
+   background: var(--color-success-soft);
+  color: var(--color-success);
+
+  border-radius: 999px;
+
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+
+.stat-change.negative {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.stat-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-title {
+  color: var(--color-text-secondary);
+
+  font-size: 0.75rem;
+}
+
+.stat-value {
   margin-top: 0.25rem;
 
+  color: var(--color-text);
+
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* ============================================
+   Analytics
+   ============================================ */
+
+.analytics-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 0.9fr)
+    minmax(0, 1.6fr);
+
+  gap: 1rem;
+
+  margin-bottom: 1rem;
+}
+
+/* ============================================
+   Salary Distribution
+   ============================================ */
+
+.chart-placeholder {
+  min-height: 17rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 2.5rem;
+}
+
+.donut {
+  width: 11rem;
+  height: 11rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    conic-gradient(
+      var(--color-primary) 0deg 148deg,
+      var(--color-success) 148deg 296deg,
+      var(--color-warning) 296deg 345deg,
+      var(--color-danger) 345deg 360deg
+    );
+
+  position: relative;
+}
+
+.donut::before {
+  content: "";
+
+  position: absolute;
+
+  width: 7rem;
+  height: 7rem;
+
+  background: var(--color-surface);
+
+  border-radius: 50%;
+}
+
+.donut-center {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  z-index: 1;
+}
+
+.donut-center strong {
+  color: var(--color-text);
+
+  font-size: 1.375rem;
+}
+
+.donut-center span {
   color: var(--color-text-secondary);
+
+  font-size: 0.6875rem;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.875rem;
+}
+
+.legend-item {
+  display: grid;
+
+  grid-template-columns:
+    0.5rem 1fr auto;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+  color: var(--color-text-secondary);
+
+  font-size: 0.75rem;
+}
+
+.legend-item strong {
+  color: var(--color-text);
+
+  font-weight: 600;
+}
+
+.legend-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+
+  border-radius: 50%;
+}
+
+.legend-dot.junior {
+  background: var(--color-primary);
+}
+
+.legend-dot.mid {
+  background: var(--color-success);
+}
+
+.legend-dot.senior {
+  background: var(--color-warning);
+}
+
+.legend-dot.executive {
+  background: var(--color-danger);
+}
+
+/* ============================================
+   Salary Trend
+   ============================================ */
+
+.trend-chart {
+  min-height: 17rem;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-value {
+  color: var(--color-text);
+
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.chart-period {
+  margin-top: 0.125rem;
+
+  color: var(--color-text-secondary);
+
+  font-size: 0.75rem;
+}
+
+.line-chart {
+  flex: 1;
+
+  margin-top: 1.5rem;
+
+  min-height: 11rem;
+}
+
+.line-chart svg {
+  width: 100%;
+  height: 100%;
+  min-height: 11rem;
+}
+
+.grid-line {
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.trend-line {
+  fill: none;
+
+  stroke: var(--color-primary);
+
+  stroke-width: 3;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+
+  margin-top: 0.5rem;
+
+  color: var(--color-text-secondary);
+
+  font-size: 0.6875rem;
+}
+
+/* ============================================
+   Employees
+   ============================================ */
+
+.employees-section {
+  margin-bottom: 1rem;
+}
+
+.table-container {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+thead {
+  background: var(--color-surface-hover);
+}
+
+th {
+  padding: 0.75rem 1rem;
+
+  color: var(--color-text-secondary);
+
+  font-size: 0.6875rem;
+  font-weight: 600;
+
+  text-align: left;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+td {
+  padding: 0.875rem 1rem;
+
+  color: var(--color-text-secondary);
+
+  border-top: 0.0625rem solid var(--color-border);
+
+  font-size: 0.8125rem;
+}
+
+tbody tr {
+  transition: background-color 150ms ease;
+}
+
+tbody tr:hover {
+  background: var(--color-surface-hover);
+}
+
+/* ============================================
+   Employee Cell
+   ============================================ */
+
+.employee-cell {
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+}
+
+.employee-avatar {
+  width: 2rem;
+  height: 2rem;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--color-primary-soft);
+
+  color: var(--color-primary);
+
+  border-radius: 50%;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.employee-cell div:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.employee-cell strong {
+  color: var(--color-text);
+
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.employee-cell span {
+  color: var(--color-text-secondary);
+
+  font-size: 0.6875rem;
+}
+
+.salary {
+  color: var(--color-text);
+
+  font-weight: 600;
+}
+
+/* ============================================
+   Status
+   ============================================ */
+
+.status {
+  display: inline-flex;
+
+  padding: 0.25rem 0.5rem;
+
+   background: var(--color-success-soft);
+  color: var(--color-success);
+
+  border-radius: 999px;
+
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.status.inactive {
+  background: var(--color-neutral-soft);
+  color: var(--color-secondary);
+}
+
+/* ============================================
+   View Button
+   ============================================ */
+
+.view-button {
+  padding: 0.375rem 0.625rem;
+
+  background: transparent;
+
+  color: var(--color-primary);
+
+  border-radius: var(--radius-sm);
+
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.view-button:hover {
+  background: var(--color-primary-soft);
+}
+
+/* ============================================
+   Table Footer
+   ============================================ */
+
+.table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-top: 1rem;
+
+  border-top: 0.0625rem solid var(--color-border);
+
+  color: var(--color-text-secondary);
+
+  font-size: 0.75rem;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 64rem) {
+
+  .stats-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 48rem) {
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 1rem;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-placeholder {
+    flex-direction: column;
+
+    gap: 1.5rem;
+  }
+
+  .table-footer {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 0.75rem;
+  }
 }

@@ -35,6 +35,10 @@
   --shadow-sm: 0 0.0625rem 0.125rem rgba(15, 23, 42, 0.05);
   --shadow-md: 0 0.25rem 0.75rem rgba(15, 23, 42, 0.08);
 
+  --color-success-soft: #f0fdf4;
+--color-danger-soft: #fef2f2;
+--color-neutral-soft: #f8fafc;
+
   /* Typography */
   --font-family:
     Inter,
@@ -72,6 +76,10 @@
   /* Text */
   --color-text: #f8fafc;
   --color-text-secondary: #94a3b8;
+
+  --color-success-soft: #14351f;
+  --color-danger-soft: #3a1c1c;
+  --color-neutral-soft: #334155;
 
   /* Border */
   --color-border: #334155;
