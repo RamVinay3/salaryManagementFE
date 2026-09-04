@@ -1,11 +1,12 @@
 import { Component, computed, signal } from '@angular/core';
 import { Card } from '../../shared/components/card/card';
 import { Employee } from '../../core/models/employee.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-employees',
   standalone: true,
-  imports: [Card],
+  imports: [Card,RouterLink],
   templateUrl: './employees.html',
   styleUrl: './employees.css'
 })
