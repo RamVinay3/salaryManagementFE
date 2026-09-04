@@ -1,166 +1,178 @@
-<section class="employees-page">
+<div class="employees-page">
 
-  <!-- Page Header -->
+  <div class="page-header">
 
-  <header class="page-header">
-
-    <div class="page-title">
-
+    <div>
       <h1>Employees</h1>
 
       <p>
-        Manage employee information and salary details.
+        Manage employee information and details.
       </p>
-
     </div>
 
-    <button
-  class="primary-button"
-  type="button"
-  routerLink="/employees/new"
->
-  <span class="button-icon">+</span>
-  Add Employee
-</button>
+    <a
+      class="primary-button"
+      routerLink="/employees/new"
+    >
+      + Add Employee
+    </a>
 
-  </header>
+  </div>
 
-
-  <!-- Employee Directory -->
 
   <app-card>
 
-    <!-- Toolbar -->
+    <div class="filters">
 
-    <div class="toolbar">
+      <div class="search-wrapper">
 
-      <!-- Search -->
-
-      <div class="search-container">
-
-        <span class="search-icon">
-          ⌕
-        </span>
+        <label for="search">
+          Search
+        </label>
 
         <input
-          type="search"
-          placeholder="Search employees..."
+          id="search"
+          type="text"
+          placeholder="Search by name, employee code, email..."
           [value]="searchTerm()"
-          (input)="setSearch($event)"
+          (input)="
+            searchTerm.set(
+              $any($event.target).value
+            )
+          "
+          (keyup.enter)="onSearch()"
         />
 
       </div>
 
 
-      <!-- Filters -->
+      <div class="filter-group">
 
-      <div class="filters">
+        <label for="department">
+          Department
+        </label>
 
         <select
+          id="department"
           [value]="selectedDepartment()"
-          (change)="setDepartment($event)"
-          aria-label="Filter by department"
+          [disabled]="loadingDepartments()"
+          (change)="onDepartmentChange($event)"
         >
 
-          <option value="All">
-            All Departments
+          <option value="">
+            {{
+              loadingDepartments()
+                ? 'Loading departments...'
+                : 'All Departments'
+            }}
           </option>
 
           @for (
             department of departments();
-            track department
+            track department.id
           ) {
 
-            <option [value]="department">
-              {{ department }}
+            <option
+              [value]="department.id"
+            >
+              {{ department.name }}
             </option>
 
           }
 
         </select>
 
+      </div>
+
+
+      <div class="filter-group">
+
+        <label for="country">
+          Country
+        </label>
 
         <select
-          [value]="selectedStatus()"
-          (change)="setStatus($event)"
-          aria-label="Filter by status"
+          id="country"
+          [value]="selectedCountry()"
+          (change)="onCountryChange($event)"
         >
 
-          <option value="All">
-            All Status
+          <option value="">
+            All Countries
           </option>
 
-          <option value="Active">
-            Active
+          <option value="IN">
+            India
           </option>
 
-          <option value="Inactive">
-            Inactive
+          <option value="US">
+            United States
+          </option>
+
+          <option value="UK">
+            United Kingdom
           </option>
 
         </select>
 
+      </div>
 
-        @if (
-          searchTerm() ||
-          selectedDepartment() !== 'All' ||
-          selectedStatus() !== 'All'
-        ) {
 
-          <button
-            class="clear-button"
-            type="button"
-            (click)="clearFilters()"
-          >
-            Clear
-          </button>
+      <button
+        class="secondary-button"
+        type="button"
+        (click)="onSearch()"
+      >
+        Search
+      </button>
 
-        }
+
+      <button
+        class="clear-button"
+        type="button"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+
+    </div>
+
+  </app-card>
+
+
+  <app-card>
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>Employee List</h2>
+
+        <p>
+          Showing {{ startRecord() }} -
+          {{ endRecord() }}
+          of {{ totalElements() }} employees
+        </p>
 
       </div>
 
     </div>
 
 
-    <!-- Results Summary -->
-
-    <div class="results-summary">
-
-      <span>
-
-        @if (filteredEmployees().length === 1) {
-          1 employee found
-        } @else {
-          {{ filteredEmployees().length }} employees found
-        }
-
-      </span>
-
-    </div>
-
-
-    <!-- Table -->
-
-    <div class="table-container">
+    <div class="table-wrapper">
 
       <table>
 
         <thead>
 
           <tr>
-
             <th>Employee</th>
-
+            <th>Email</th>
             <th>Department</th>
-
-            <th>Designation</th>
-
-            <th>Salary</th>
-
-            <th>Status</th>
-
+            <th>Job Title</th>
+            <th>Country</th>
+            <th>Hire Date</th>
             <th>Action</th>
-
           </tr>
 
         </thead>
@@ -168,37 +180,84 @@
 
         <tbody>
 
-          @if (paginatedEmployees().length > 0) {
+          @if (loading()) {
+
+            <tr>
+
+              <td
+                colspan="7"
+                class="table-message"
+              >
+                Loading employees...
+              </td>
+
+            </tr>
+
+          } @else if (error()) {
+
+            <tr>
+
+              <td
+                colspan="7"
+                class="table-message error-message"
+              >
+                {{ error() }}
+              </td>
+
+            </tr>
+
+          } @else if (
+            employees().length === 0
+          ) {
+
+            <tr>
+
+              <td
+                colspan="7"
+                class="table-message"
+              >
+                No employees found.
+              </td>
+
+            </tr>
+
+          } @else {
 
             @for (
-              employee of paginatedEmployees();
+              employee of employees();
               track employee.id
             ) {
 
               <tr>
-
-                <!-- Employee -->
 
                 <td>
 
                   <div class="employee-cell">
 
                     <div class="employee-avatar">
-                      {{ getInitials(employee.name) }}
+
+                      {{
+                        getInitials(
+                          employee.firstName,
+                          employee.lastName
+                        )
+                      }}
+
                     </div>
 
                     <div class="employee-info">
 
-                      <strong>
-                        {{ employee.name }}
-                      </strong>
+                      <span class="employee-name">
 
-                      <span>
-                        {{ employee.id }}
+                        {{ employee.firstName }}
+                        {{ employee.lastName }}
+
                       </span>
 
-                      <span>
-                        {{ employee.email }}
+                      <span class="employee-code">
+
+                        {{ employee.employeeCode }}
+
                       </span>
 
                     </div>
@@ -208,91 +267,51 @@
                 </td>
 
 
-                <!-- Department -->
-
                 <td>
-
-                  <span class="department">
-                    {{ employee.department }}
-                  </span>
-
+                  {{ employee.email }}
                 </td>
 
 
-                <!-- Designation -->
-
                 <td>
-                  {{ employee.designation }}
+                  {{ employee.departmentName }}
                 </td>
 
 
-                <!-- Salary -->
-
                 <td>
-
-                  <strong class="salary">
-                    {{ formatSalary(employee.salary) }}
-                  </strong>
-
+                  {{ employee.jobTitle }}
                 </td>
 
 
-                <!-- Status -->
-
                 <td>
-
-                  <span
-                    class="status"
-                    [class.inactive]="employee.status === 'Inactive'"
-                  >
-                    {{ employee.status }}
-                  </span>
-
+                  {{ employee.country }}
                 </td>
 
 
-                <!-- Action -->
+                <td>
+                  {{
+                    employee.hireDate
+                      | date:'dd MMM yyyy'
+                  }}
+                </td>
+
 
                 <td>
 
-                  <button
+                  <a
                     class="view-button"
-                    type="button"
-                     [routerLink]="['/employees', employee.id]"
+                    [routerLink]="[
+                      '/employees',
+                      employee.id
+                    ]"
                   >
                     View
-                  </button>
+                  </a>
 
                 </td>
 
               </tr>
 
             }
-
-          } @else {
-
-            <tr>
-
-              <td
-                colspan="6"
-                class="empty-state"
-              >
-
-                <div class="empty-icon">
-                  ⌕
-                </div>
-
-                <strong>
-                  No employees found
-                </strong>
-
-                <span>
-                  Try changing your search or filters.
-                </span>
-
-              </td>
-
-            </tr>
 
           }
 
@@ -303,71 +322,101 @@
     </div>
 
 
-    <!-- Pagination -->
+    @if (
+      !loading() &&
+      !error() &&
+      totalPages() > 0
+    ) {
 
-    <div class="pagination">
+      <div class="pagination-container">
 
-      <span class="pagination-info">
+        <div class="pagination-info">
 
-        Showing
-        <strong>
-          {{ startRecord() }}
-        </strong>
-        -
-        <strong>
-          {{ endRecord() }}
-        </strong>
-        of
-        <strong>
-          {{ filteredEmployees().length }}
-        </strong>
+          <span>
+            Page {{ currentPage() + 1 }}
+            of {{ totalPages() }}
+          </span>
 
-      </span>
+        </div>
 
 
-      <div class="pagination-controls">
-
-        <button
-          type="button"
-          class="page-button"
-          [disabled]="currentPage() === 1"
-          (click)="goToPage(currentPage() - 1)"
+        <nav
+          class="pagination"
+          aria-label="Employee pagination"
         >
-          ←
-        </button>
-
-
-        @for (
-          page of [].constructor(totalPages());
-          let index = $index;
-          track index
-        ) {
 
           <button
+            class="pagination-button pagination-navigation"
             type="button"
-            class="page-button"
-            [class.active]="currentPage() === index + 1"
-            (click)="goToPage(index + 1)"
+            [disabled]="
+              currentPage() === 0
+            "
+            (click)="goToPreviousPage()"
           >
-            {{ index + 1 }}
+            <span>←</span>
+            <span>Previous</span>
           </button>
 
-        }
+
+          <div class="pagination-pages">
+
+            @for (
+              page of visiblePages();
+              track $index
+            ) {
+
+              @if (page === -1) {
+
+                <span
+                  class="pagination-ellipsis"
+                >
+                  ...
+                </span>
+
+              } @else {
+
+                <button
+                  class="pagination-button pagination-number"
+                  type="button"
+                  [class.active]="
+                    currentPage() === page
+                  "
+                  [attr.aria-current]="
+                    currentPage() === page
+                      ? 'page'
+                      : null
+                  "
+                  (click)="goToPage(page)"
+                >
+                  {{ page + 1 }}
+                </button>
+
+              }
+
+            }
+
+          </div>
 
 
-        <button
-          type="button"
-          class="page-button"
-          [disabled]="currentPage() === totalPages()"
-          (click)="goToPage(currentPage() + 1)"
-        >
-          →
-        </button>
+          <button
+            class="pagination-button pagination-navigation"
+            type="button"
+            [disabled]="
+              currentPage() ===
+              totalPages() - 1
+            "
+            (click)="goToNextPage()"
+          >
+            <span>Next</span>
+            <span>→</span>
+          </button>
+
+        </nav>
 
       </div>
 
-    </div>
+    }
 
   </app-card>
 
-</section>
+</div>

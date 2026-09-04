@@ -1,39 +1,75 @@
-@if (employee(); as employee) {
+<div class="details-page">
 
-  <section class="details-page">
+  @if (loading()) {
 
-    <!-- Header -->
+    <div class="loading-state">
+      Loading employee information...
+    </div>
 
-    <header class="page-header">
+  } @else if (error()) {
 
-      <div class="page-title">
+    <div class="not-found">
+
+      <h2>
+        Unable to load employee
+      </h2>
+
+      <p>
+        {{ error() }}
+      </p>
+
+      <button
+        class="primary-button"
+        type="button"
+        (click)="goBack()"
+      >
+        Back to Employees
+      </button>
+
+    </div>
+
+  } @else if (employee(); as employee) {
+
+    <!-- Employee Header -->
+
+    <div class="page-header">
+
+      <div class="page-header-left">
 
         <button
           class="back-button"
           type="button"
           (click)="goBack()"
         >
-          ←
+          ← Back to Employees
         </button>
 
         <div>
-          <h1>Employee Details</h1>
+
+          <h1>
+            Employee Details
+          </h1>
 
           <p>
-            View employee and salary information.
+            View employee information and employment details.
           </p>
+
         </div>
 
       </div>
 
       <a
         class="primary-button"
-        [routerLink]="['/employees', employee.id, 'edit']"
+        [routerLink]="[
+          '/employees',
+          employee.id,
+          'edit'
+        ]"
       >
         Edit Employee
       </a>
 
-    </header>
+    </div>
 
 
     <!-- Employee Summary -->
@@ -43,191 +79,248 @@
       <div class="employee-summary">
 
         <div class="employee-avatar">
-          {{ getInitials(employee.name) }}
+          {{ getInitials(
+            employee.firstName,
+            employee.lastName
+          ) }}
         </div>
 
         <div class="employee-summary-info">
 
           <h2>
-            {{ employee.name }}
+            {{ employee.firstName }}
+            {{ employee.lastName }}
           </h2>
 
           <p>
-            {{ employee.designation }}
+            {{ employee.jobTitle }}
           </p>
 
-          <span>
-            {{ employee.id }}
+          <span class="employee-code">
+            {{ employee.employeeCode }}
           </span>
 
         </div>
-
-        <span
-          class="status"
-          [class.inactive]="employee.status === 'Inactive'"
-        >
-          {{ employee.status }}
-        </span>
 
       </div>
 
     </app-card>
 
 
-    <!-- Information -->
+    <!-- Personal Information -->
 
-    <div class="details-grid">
+    <app-card title="Personal Information">
 
-      <!-- Personal Information -->
+      <div class="information-grid">
 
-      <app-card title="Personal Information">
+        <div class="information-item">
 
-        <div class="information-grid">
-
-          <div class="information-item">
-
-            <span>Email</span>
-
-            <strong>
-              {{ employee.email }}
-            </strong>
-
-          </div>
-
-          <div class="information-item">
-
-            <span>Phone</span>
-
-            <strong>
-              {{ employee.phone }}
-            </strong>
-
-          </div>
-
-        </div>
-
-      </app-card>
-
-
-      <!-- Employment Information -->
-
-      <app-card title="Employment Information">
-
-        <div class="information-grid">
-
-          <div class="information-item">
-
-            <span>Department</span>
-
-            <strong>
-              {{ employee.department }}
-            </strong>
-
-          </div>
-
-          <div class="information-item">
-
-            <span>Designation</span>
-
-            <strong>
-              {{ employee.designation }}
-            </strong>
-
-          </div>
-
-          <div class="information-item">
-
-            <span>Joining Date</span>
-
-            <strong>
-              {{ employee.joiningDate }}
-            </strong>
-
-          </div>
-
-          <div class="information-item">
-
-            <span>Status</span>
-
-            <strong>
-              {{ employee.status }}
-            </strong>
-
-          </div>
-
-        </div>
-
-      </app-card>
-
-
-      <!-- Salary Information -->
-
-      <app-card title="Salary Information">
-
-        <div class="salary-summary">
-
-          <span>
-            Annual Salary
+          <span class="information-label">
+            Employee Code
           </span>
 
-          <strong>
-            {{ formatSalary(employee.salary) }}
-          </strong>
+          <span class="information-value">
+            {{ employee.employeeCode }}
+          </span>
 
         </div>
 
-        <div class="salary-details">
 
-          <div class="salary-row">
+        <div class="information-item">
 
-            <span>
-              Monthly Salary
-            </span>
+          <span class="information-label">
+            First Name
+          </span>
 
-            <strong>
-              ₹{{ (employee.salary / 12).toFixed(0) }}
-            </strong>
-
-          </div>
-
-          <div class="salary-row">
-
-            <span>
-              Annual Salary
-            </span>
-
-            <strong>
-              ₹{{ employee.salary.toLocaleString('en-IN') }}
-            </strong>
-
-          </div>
+          <span class="information-value">
+            {{ employee.firstName }}
+          </span>
 
         </div>
 
-      </app-card>
+
+        <div class="information-item">
+
+          <span class="information-label">
+            Last Name
+          </span>
+
+          <span class="information-value">
+            {{ employee.lastName }}
+          </span>
+
+        </div>
+
+
+        <div class="information-item">
+
+          <span class="information-label">
+            Email
+          </span>
+
+          <span class="information-value">
+            {{ employee.email }}
+          </span>
+
+        </div>
+
+
+        <div class="information-item">
+
+          <span class="information-label">
+            Country
+          </span>
+
+          <span class="information-value">
+            {{ employee.country }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </app-card>
+
+
+    <!-- Employment Information -->
+
+    <app-card title="Employment Information">
+
+      <div class="information-grid">
+
+        <div class="information-item">
+
+          <span class="information-label">
+            Department
+          </span>
+
+          <span class="information-value">
+            {{ employee.departmentName }}
+          </span>
+
+        </div>
+
+
+        <div class="information-item">
+
+          <span class="information-label">
+            Department ID
+          </span>
+
+          <span class="information-value">
+            {{ employee.departmentId }}
+          </span>
+
+        </div>
+
+
+        <div class="information-item">
+
+          <span class="information-label">
+            Job Title
+          </span>
+
+          <span class="information-value">
+            {{ employee.jobTitle }}
+          </span>
+
+        </div>
+
+
+        <div class="information-item">
+
+          <span class="information-label">
+            Hire Date
+          </span>
+
+          <span class="information-value">
+            {{ employee.hireDate | date:'dd MMM yyyy' }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </app-card>
+
+
+    <!-- Salary Information -->
+
+   <!-- Salary Information -->
+
+<app-card title="Salary Information">
+
+  @if (loadingSalary()) {
+
+    <div class="loading-state">
+      Loading salary information...
+    </div>
+
+  } @else if (salaryError()) {
+
+    <div class="salary-error">
+      {{ salaryError() }}
+    </div>
+
+  } @else if (salary(); as salary) {
+
+    <div class="salary-info">
+
+      <div class="salary-item">
+
+        <span class="information-label">
+          Current Salary
+        </span>
+
+        <strong class="salary-amount">
+          {{ salary.amount | number:'1.2-2' }}
+          {{ salary.currency }}
+        </strong>
+
+      </div>
+
+
+      <div class="salary-item">
+
+        <span class="information-label">
+          Effective Date
+        </span>
+
+        <span class="salary-date">
+          {{ salary.effectiveDate | date:'dd MMM yyyy' }}
+        </span>
+
+      </div>
+
+
+      <div class="salary-action">
+
+        <a
+          class="secondary-button"
+          [routerLink]="[
+            '/employees',
+            salary.employeeId,
+            'salary'
+          ]"
+        >
+          Manage Salary
+        </a>
+
+      </div>
 
     </div>
 
-  </section>
+  } @else {
 
-} @else {
+    <div class="salary-empty">
+      No salary information available.
+    </div>
 
-  <section class="not-found">
+  }
 
-    <h1>Employee not found</h1>
+</app-card>
 
-    <p>
-      The employee you're looking for does not exist.
-    </p>
 
-    <button
-      class="primary-button"
-      type="button"
-      (click)="goBack()"
-    >
-      Back to Employees
-    </button>
+  }
 
-  </section>
-
-}
+</div>

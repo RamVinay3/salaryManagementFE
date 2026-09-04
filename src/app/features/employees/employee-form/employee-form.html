@@ -1,393 +1,318 @@
-<section class="employee-form-page">
+<div class="employee-form-page">
 
-  <!-- Header -->
+  <div class="page-header">
 
-  <header class="page-header">
-
-    <div class="page-title">
-
-      <button
-        class="back-button"
-        type="button"
-        (click)="cancel()"
-      >
-        ←
-      </button>
-
-      <div>
-       <h1>
+    <div>
+      <h1>
         {{ isEditMode ? 'Edit Employee' : 'Add Employee' }}
       </h1>
 
       <p>
         {{
           isEditMode
-            ? 'Update employee and salary information.'
-            : 'Add a new employee and their salary information.'
+            ? 'Update employee information.'
+            : 'Add a new employee to the organization.'
         }}
       </p>
-      </div>
-
     </div>
 
-  </header>
+    <button
+      class="secondary-button"
+      type="button"
+      (click)="cancel()"
+    >
+      Cancel
+    </button>
+
+  </div>
 
 
-  <!-- Form -->
+  @if (loading) {
 
-  <form
-    class="employee-form"
-    [formGroup]="employeeForm"
-    (ngSubmit)="saveEmployee()"
-  >
+    <div class="loading-state">
+      Loading employee information...
+    </div>
 
-    <!-- Personal Information -->
+  } @else {
 
-    <section class="form-section">
+    <form
+      class="employee-form"
+      [formGroup]="employeeForm"
+      (ngSubmit)="saveEmployee()"
+    >
 
-      <div class="section-header">
+      @if (error) {
+        <div class="form-error">
+          {{ error }}
+        </div>
+      }
 
-        <div>
-          <h2>Personal Information</h2>
 
-          <p>
-            Basic information about the employee.
-          </p>
+      <div class="form-section">
+
+        <div class="section-header">
+          <h2>Employee Information</h2>
+          <p>Basic information about the employee.</p>
         </div>
 
-      </div>
 
+        <div class="form-grid">
 
-      <div class="form-grid">
+          @if (!isEditMode) {
 
-        <!-- First Name -->
+            <div class="form-field">
 
-        <div class="form-field">
+              <label for="employeeCode">
+                Employee Code
+              </label>
 
-          <label for="firstName">
-            First Name
-            <span>*</span>
-          </label>
+              <input
+                id="employeeCode"
+                type="text"
+                formControlName="employeeCode"
+                placeholder="EMP001"
+              />
 
-          <input
-            id="firstName"
-            type="text"
-            formControlName="firstName"
-            placeholder="Enter first name"
-            [class.invalid]="isFieldInvalid('firstName')"
-          />
+              @if (isFieldInvalid('employeeCode')) {
+                <span class="field-error">
+                  {{ getFieldError('employeeCode') }}
+                </span>
+              }
 
-          @if (isFieldInvalid('firstName')) {
-            <small class="error-message">
-              {{ getFieldError('firstName') }}
-            </small>
+            </div>
+
           }
 
-        </div>
 
+          <div class="form-field">
 
-        <!-- Last Name -->
-
-        <div class="form-field">
-
-          <label for="lastName">
-            Last Name
-            <span>*</span>
-          </label>
-
-          <input
-            id="lastName"
-            type="text"
-            formControlName="lastName"
-            placeholder="Enter last name"
-            [class.invalid]="isFieldInvalid('lastName')"
-          />
-
-          @if (isFieldInvalid('lastName')) {
-            <small class="error-message">
-              {{ getFieldError('lastName') }}
-            </small>
-          }
-
-        </div>
-
-
-        <!-- Email -->
-
-        <div class="form-field">
-
-          <label for="email">
-            Email
-            <span>*</span>
-          </label>
-
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            placeholder="employee@company.com"
-            [class.invalid]="isFieldInvalid('email')"
-          />
-
-          @if (isFieldInvalid('email')) {
-            <small class="error-message">
-              {{ getFieldError('email') }}
-            </small>
-          }
-
-        </div>
-
-
-        <!-- Phone -->
-
-        <div class="form-field">
-
-          <label for="phone">
-            Phone
-            <span>*</span>
-          </label>
-
-          <input
-            id="phone"
-            type="tel"
-            formControlName="phone"
-            placeholder="10-digit mobile number"
-            maxlength="10"
-            [class.invalid]="isFieldInvalid('phone')"
-          />
-
-          @if (isFieldInvalid('phone')) {
-            <small class="error-message">
-              {{ getFieldError('phone') }}
-            </small>
-          }
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- Employment Information -->
-
-    <section class="form-section">
-
-      <div class="section-header">
-
-        <div>
-          <h2>Employment Information</h2>
-
-          <p>
-            Information about the employee's role.
-          </p>
-        </div>
-
-      </div>
-
-
-      <div class="form-grid">
-
-        <!-- Department -->
-
-        <div class="form-field">
-
-          <label for="department">
-            Department
-            <span>*</span>
-          </label>
-
-          <select
-            id="department"
-            formControlName="department"
-            [class.invalid]="isFieldInvalid('department')"
-          >
-
-            <option value="">
-              Select department
-            </option>
-
-            @for (
-              department of departments;
-              track department
-            ) {
-
-              <option [value]="department">
-                {{ department }}
-              </option>
-
-            }
-
-          </select>
-
-          @if (isFieldInvalid('department')) {
-            <small class="error-message">
-              {{ getFieldError('department') }}
-            </small>
-          }
-
-        </div>
-
-
-        <!-- Designation -->
-
-        <div class="form-field">
-
-          <label for="designation">
-            Designation
-            <span>*</span>
-          </label>
-
-          <input
-            id="designation"
-            type="text"
-            formControlName="designation"
-            placeholder="e.g. Software Engineer"
-            [class.invalid]="isFieldInvalid('designation')"
-          />
-
-          @if (isFieldInvalid('designation')) {
-            <small class="error-message">
-              {{ getFieldError('designation') }}
-            </small>
-          }
-
-        </div>
-
-
-        <!-- Joining Date -->
-
-        <div class="form-field">
-
-          <label for="joiningDate">
-            Joining Date
-            <span>*</span>
-          </label>
-
-          <input
-            id="joiningDate"
-            type="date"
-            formControlName="joiningDate"
-            [class.invalid]="isFieldInvalid('joiningDate')"
-          />
-
-          @if (isFieldInvalid('joiningDate')) {
-            <small class="error-message">
-              {{ getFieldError('joiningDate') }}
-            </small>
-          }
-
-        </div>
-
-
-        <!-- Status -->
-
-        <div class="form-field">
-
-          <label for="status">
-            Status
-            <span>*</span>
-          </label>
-
-          <select
-            id="status"
-            formControlName="status"
-          >
-
-            <option value="Active">
-              Active
-            </option>
-
-            <option value="Inactive">
-              Inactive
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- Salary Information -->
-
-    <section class="form-section">
-
-      <div class="section-header">
-
-        <div>
-          <h2>Salary Information</h2>
-
-          <p>
-            Current salary details for the employee.
-          </p>
-        </div>
-
-      </div>
-
-
-      <div class="form-grid">
-
-        <!-- Salary -->
-
-        <div class="form-field">
-
-          <label for="salary">
-            Annual Salary
-            <span>*</span>
-          </label>
-
-          <div class="input-with-prefix">
-
-            <span>₹</span>
+            <label for="firstName">
+              First Name
+            </label>
 
             <input
-              id="salary"
-              type="number"
-              formControlName="salary"
-              placeholder="Enter annual salary"
-              min="1"
-              [class.invalid]="isFieldInvalid('salary')"
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              placeholder="Enter first name"
             />
+
+            @if (isFieldInvalid('firstName')) {
+              <span class="field-error">
+                {{ getFieldError('firstName') }}
+              </span>
+            }
 
           </div>
 
-          @if (isFieldInvalid('salary')) {
-            <small class="error-message">
-              {{ getFieldError('salary') }}
-            </small>
-          }
+
+          <div class="form-field">
+
+            <label for="lastName">
+              Last Name
+            </label>
+
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              placeholder="Enter last name"
+            />
+
+            @if (isFieldInvalid('lastName')) {
+              <span class="field-error">
+                {{ getFieldError('lastName') }}
+              </span>
+            }
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="email">
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="employee@company.com"
+            />
+
+            @if (isFieldInvalid('email')) {
+              <span class="field-error">
+                {{ getFieldError('email') }}
+              </span>
+            }
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="country">
+              Country
+            </label>
+
+            <select
+              id="country"
+              formControlName="country"
+            >
+              <option value="">
+                Select country
+              </option>
+
+              <option value="IN">
+                India
+              </option>
+
+              <option value="US">
+                United States
+              </option>
+
+              <option value="UK">
+                United Kingdom
+              </option>
+            </select>
+
+            @if (isFieldInvalid('country')) {
+              <span class="field-error">
+                {{ getFieldError('country') }}
+              </span>
+            }
+
+          </div>
 
         </div>
 
       </div>
 
-    </section>
+
+      <div class="form-section">
+
+        <div class="section-header">
+          <h2>Employment Information</h2>
+          <p>Department and employment details.</p>
+        </div>
 
 
-    <!-- Actions -->
+        <div class="form-grid">
 
-    <footer class="form-actions">
+          <div class="form-field">
 
-      <button
-        class="secondary-button"
-        type="button"
-        (click)="cancel()"
-      >
-        Cancel
-      </button>
+            <label for="departmentId">
+              Department
+            </label>
 
-      <button
-        class="primary-button"
-        type="submit"
-      >
-         {{ isEditMode ? 'Update Employee' : 'Save Employee' }}
-      </button>
+            <select
+            id="departmentId"
+            formControlName="departmentId"
+            [disabled]="loadingDepartments()"
+          >
+            <option [ngValue]="-1">
+              {{
+                loadingDepartments()
+                  ? 'Loading departments...'
+                  : 'Select department'
+              }}
+            </option>
 
-    </footer>
+            @for (
+              department of departments();
+              track department.id
+            ) {
+              <option [ngValue]="department.id">
+                {{ department.name }}
+              </option>
+            }
+          </select>
 
-  </form>
+            @if (isFieldInvalid('departmentId')) {
+              <span class="field-error">
+                {{ getFieldError('departmentId') }}
+              </span>
+            }
 
-</section>
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="jobTitle">
+              Job Title
+            </label>
+
+            <input
+              id="jobTitle"
+              type="text"
+              formControlName="jobTitle"
+              placeholder="Senior Software Engineer"
+            />
+
+            @if (isFieldInvalid('jobTitle')) {
+              <span class="field-error">
+                {{ getFieldError('jobTitle') }}
+              </span>
+            }
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="hireDate">
+              Hire Date
+            </label>
+
+            <input
+              id="hireDate"
+              type="date"
+              formControlName="hireDate"
+            />
+
+            @if (isFieldInvalid('hireDate')) {
+              <span class="field-error">
+                {{ getFieldError('hireDate') }}
+              </span>
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-actions">
+
+        <button
+          class="secondary-button"
+          type="button"
+          (click)="cancel()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="primary-button"
+          type="submit"
+          [disabled]="saving"
+        >
+          {{
+            saving
+              ? 'Saving...'
+              : isEditMode
+                ? 'Update Employee'
+                : 'Save Employee'
+          }}
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

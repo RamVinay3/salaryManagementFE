@@ -1,41 +1,63 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   FormBuilder,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { EMPLOYEES } from '../../../core/data/employee.data';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink
+} from '@angular/router';
 
+import {
+  EmployeeService,
+  CreateEmployeeRequest,
+  UpdateEmployeeRequest
+} from '../../../core/services/employee';
+
+import { DepartmentService } from '../../../core/services/department';
+import { Department } from '../../../core/models/department.model';
 @Component({
   selector: 'app-employee-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule
+  ],
   templateUrl: './employee-form.html',
   styleUrl: './employee-form.css'
 })
 export class EmployeeForm {
 
-  private readonly formBuilder = inject(FormBuilder);
-
-  private readonly router = inject(Router);
+  private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly employeeService = inject(EmployeeService);
+  private readonly departmentService =inject(DepartmentService);
+  readonly departments = signal<Department[]>([]);
+readonly loadingDepartments = signal(false);
 
-   readonly isEditMode =
+  readonly isEditMode =
     this.route.snapshot.paramMap.has('id');
 
   readonly employeeId =
     this.route.snapshot.paramMap.get('id');
 
-
-  readonly employeeForm = this.formBuilder.nonNullable.group({
+  readonly employeeForm = this.fb.nonNullable.group({
+    employeeCode: [
+      '',
+      [
+        Validators.required,
+        Validators.maxLength(20)
+      ]
+    ],
 
     firstName: [
       '',
       [
         Validators.required,
         Validators.minLength(2),
-        Validators.maxLength(50)
+        Validators.maxLength(100)
       ]
     ],
 
@@ -44,7 +66,7 @@ export class EmployeeForm {
       [
         Validators.required,
         Validators.minLength(2),
-        Validators.maxLength(50)
+        Validators.maxLength(100)
       ]
     ],
 
@@ -52,159 +74,253 @@ export class EmployeeForm {
       '',
       [
         Validators.required,
-        Validators.email
+        Validators.email,
+        Validators.maxLength(255)
       ]
     ],
 
-    phone: [
+    country: [
       '',
       [
         Validators.required,
-        Validators.pattern(/^[6-9]\d{9}$/)
+        Validators.maxLength(2)
       ]
     ],
 
-    department: [
-      '',
-      Validators.required
+    departmentId: [
+      -1,
+      [Validators.min(1),Validators.required]
+      
     ],
 
-    designation: [
+    jobTitle: [
       '',
       [
         Validators.required,
-        Validators.maxLength(100)
+        Validators.maxLength(150)
       ]
     ],
 
-    joiningDate: [
+    hireDate: [
       '',
-      Validators.required
-    ],
-
-    salary: [
-      0,
-      [
-        Validators.required,
-        Validators.min(1),
-        Validators.max(100000000)
-      ]
-    ],
-
-    status: [
-      'Active',
       Validators.required
     ]
   });
 
-  readonly departments = [
-    'Engineering',
-    'Product',
-    'Sales',
-    'Finance',
-    'HR',
-    'Marketing'
-  ];
+  loading = false;
+  saving = false;
+  error = '';
+  loadDepartments(): void {
+  this.loadingDepartments.set(true);
 
-  isFieldInvalid(
-    fieldName: keyof typeof this.employeeForm.controls
-  ): boolean {
+  this.departmentService
+    .getDepartments()
+    .subscribe({
+      next: departments => {
+        this.departments.set(departments);
+        this.loadingDepartments.set(false);
+      },
 
-    const field = this.employeeForm.controls[fieldName];
+      error: error => {
+        console.error(
+          'Failed to load departments',
+          error
+        );
 
-    return field.invalid && field.touched;
+        this.departments.set([]);
+        this.loadingDepartments.set(false);
+      }
+    });
+}
+
+  constructor() {
+    this.loadDepartments();
+    if (this.isEditMode && this.employeeId) {
+      this.loadEmployee(Number(this.employeeId));
+    }
   }
 
-  getFieldError(
-    fieldName: keyof typeof this.employeeForm.controls
-  ): string {
+  loadEmployee(id: number): void {
+    this.loading = true;
+    this.error = '';
 
-    const field = this.employeeForm.controls[fieldName];
+    this.employeeService.getEmployee(id).subscribe({
+      next: employee => {
+        this.employeeForm.patchValue({
+          employeeCode: employee.employeeCode,
+          firstName: employee.firstName,
+          lastName: employee.lastName,
+          email: employee.email,
+          country: employee.country,
+          departmentId: employee.departmentId,
+          jobTitle: employee.jobTitle,
+          hireDate: employee.hireDate
+        });
 
-    if (field.hasError('required')) {
+        this.loading = false;
+      },
+
+      error: error => {
+        console.error('Failed to load employee', error);
+
+        this.error =
+          'Unable to load employee information.';
+
+        this.loading = false;
+      }
+    });
+  }
+
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.employeeForm.get(fieldName);
+
+    return !!(
+      field &&
+      field.invalid &&
+      (field.dirty || field.touched)
+    );
+  }
+
+  getFieldError(fieldName: string): string {
+    const field = this.employeeForm.get(fieldName);
+
+    if (!field || !field.errors) {
+      return '';
+    }
+
+    if (field.errors['required']) {
       return 'This field is required.';
     }
 
-    if (field.hasError('email')) {
-      return 'Enter a valid email address.';
+    if (field.errors['email']) {
+      return 'Please enter a valid email address.';
     }
 
-    if (field.hasError('minlength')) {
-      return 'Value is too short.';
+    if (field.errors['minlength']) {
+      return `Minimum ${field.errors['minlength'].requiredLength} characters required.`;
     }
 
-    if (field.hasError('maxlength')) {
-      return 'Value is too long.';
+    if (field.errors['maxlength']) {
+      return `Maximum ${field.errors['maxlength'].requiredLength} characters allowed.`;
     }
 
-    if (field.hasError('pattern')) {
-      return 'Enter a valid 10-digit mobile number.';
-    }
-
-    if (field.hasError('min')) {
-      return 'Salary must be greater than zero.';
-    }
-
-    return '';
+    return 'Invalid value.';
   }
 
   saveEmployee(): void {
 
     if (this.employeeForm.invalid) {
-
       this.employeeForm.markAllAsTouched();
-
       return;
     }
 
-    const formValue = this.employeeForm.getRawValue();
+    this.saving = true;
+    this.error = '';
 
-    const payload = {
-      ...formValue,
-      salary: Number(formValue.salary)
-    };
+    if (this.isEditMode && this.employeeId) {
 
-    console.log('Employee payload:', payload);
+      const payload: UpdateEmployeeRequest = {
+        firstName: this.employeeForm.value.firstName!,
+        lastName: this.employeeForm.value.lastName!,
+        email: this.employeeForm.value.email!,
+        country: this.employeeForm.value.country!,
+        departmentId: this.employeeForm.value.departmentId!,
+        jobTitle: this.employeeForm.value.jobTitle!,
+        hireDate: this.employeeForm.value.hireDate!
+      };
 
-    // API integration will be added later.
+      this.employeeService
+        .updateEmployee(
+          Number(this.employeeId),
+          payload
+        )
+        .subscribe({
+          next: employee => {
+            this.saving = false;
+
+            this.router.navigate([
+              '/employees',
+              employee.id
+            ]);
+          },
+
+          error: error => {
+            console.error(
+              'Failed to update employee',
+              error
+            );
+
+            this.error =
+              'Unable to update employee. Please try again.';
+
+            this.saving = false;
+          }
+        });
+
+    } else {
+
+      const payload: CreateEmployeeRequest = {
+        employeeCode:
+          this.employeeForm.value.employeeCode!,
+
+        firstName:
+          this.employeeForm.value.firstName!,
+
+        lastName:
+          this.employeeForm.value.lastName!,
+
+        email:
+          this.employeeForm.value.email!,
+
+        country:
+          this.employeeForm.value.country!,
+
+        departmentId:
+          this.employeeForm.value.departmentId!,
+
+        jobTitle:
+          this.employeeForm.value.jobTitle!,
+
+        hireDate:
+          this.employeeForm.value.hireDate!
+      };
+
+      this.employeeService
+        .createEmployee(payload)
+        .subscribe({
+          next: employee => {
+            this.saving = false;
+
+            this.router.navigate([
+              '/employees',
+              employee.id
+            ]);
+          },
+
+          error: error => {
+            console.error(
+              'Failed to create employee',
+              error
+            );
+
+            this.error =
+              'Unable to create employee. Please try again.';
+
+            this.saving = false;
+          }
+        });
+    }
   }
 
   cancel(): void {
+    if (this.isEditMode && this.employeeId) {
+      this.router.navigate([
+        '/employees',
+        this.employeeId
+      ]);
+      return;
+    }
+
     this.router.navigate(['/employees']);
-  }
-
-
-
-  constructor() {
-
-    if (!this.isEditMode || !this.employeeId) {
-      return;
-    }
-
-    const employee =
-      EMPLOYEES.find(
-        item => item.id === this.employeeId
-      );
-
-    if (!employee) {
-      this.router.navigate(['/employees']);
-
-      return;
-    }
-
-    const [firstName, ...lastNameParts] =
-      employee.name.split(' ');
-
-    this.employeeForm.patchValue({
-      firstName,
-      lastName: lastNameParts.join(' '),
-      email: employee.email,
-      phone: employee.phone,
-      department: employee.department,
-      designation: employee.designation,
-      joiningDate: employee.joiningDate,
-      salary: employee.salary,
-      status: employee.status
-    });
   }
 }
