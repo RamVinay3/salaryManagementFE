@@ -2,6 +2,7 @@ import { Component, computed, signal } from '@angular/core';
 import { Card } from '../../shared/components/card/card';
 import { Employee } from '../../core/models/employee.model';
 import { RouterLink } from '@angular/router';
+import { EMPLOYEES } from '../../core/data/employee.data';
 
 @Component({
   selector: 'app-employees',
@@ -12,98 +13,7 @@ import { RouterLink } from '@angular/router';
 })
 export class Employees {
 
-  readonly employees = signal<Employee[]>([
-    {
-      id: 'EMP001',
-      name: 'Amit Sharma',
-      email: 'amit.sharma@company.com',
-      department: 'Engineering',
-      designation: 'Senior Software Engineer',
-      salary: 1250000,
-      status: 'Active'
-    },
-    {
-      id: 'EMP002',
-      name: 'Priya Reddy',
-      email: 'priya.reddy@company.com',
-      department: 'Product',
-      designation: 'Product Manager',
-      salary: 1870000,
-      status: 'Active'
-    },
-    {
-      id: 'EMP003',
-      name: 'Rahul Kumar',
-      email: 'rahul.kumar@company.com',
-      department: 'Sales',
-      designation: 'Sales Manager',
-      salary: 1560000,
-      status: 'Active'
-    },
-    {
-      id: 'EMP004',
-      name: 'Sneha Patel',
-      email: 'sneha.patel@company.com',
-      department: 'Engineering',
-      designation: 'Software Engineer',
-      salary: 1120000,
-      status: 'Active'
-    },
-    {
-      id: 'EMP005',
-      name: 'Arjun Mehta',
-      email: 'arjun.mehta@company.com',
-      department: 'Finance',
-      designation: 'Financial Analyst',
-      salary: 980000,
-      status: 'Inactive'
-    },
-    {
-      id: 'EMP006',
-      name: 'Neha Singh',
-      email: 'neha.singh@company.com',
-      department: 'HR',
-      designation: 'HR Manager',
-      salary: 1350000,
-      status: 'Active'
-    },
-    {
-      id: 'EMP007',
-      name: 'Vikram Rao',
-      email: 'vikram.rao@company.com',
-      department: 'Engineering',
-      designation: 'Tech Lead',
-      salary: 2250000,
-      status: 'Active'
-    },
-    {
-      id: 'EMP008',
-      name: 'Kavya Nair',
-      email: 'kavya.nair@company.com',
-      department: 'Marketing',
-      designation: 'Marketing Manager',
-      salary: 1420000,
-      status: 'Active'
-    },
-    {
-      id: 'EMP009',
-      name: 'Rohan Das',
-      email: 'rohan.das@company.com',
-      department: 'Finance',
-      designation: 'Accountant',
-      salary: 850000,
-      status: 'Active'
-    },
-    {
-      id: 'EMP010',
-      name: 'Ananya Iyer',
-      email: 'ananya.iyer@company.com',
-      department: 'Product',
-      designation: 'UX Designer',
-      salary: 1180000,
-      status: 'Inactive'
-    }
-  ]);
+  readonly employees = signal<Employee[]>(EMPLOYEES);
 
   readonly searchTerm = signal('');
 

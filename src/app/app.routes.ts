@@ -4,6 +4,7 @@ import { Dashboard } from './features/dashboard/dashboard';
 
 import { Employees } from './features/employees/employees';
 import { EmployeeForm } from './features/employees/employee-form/employee-form';
+import { EmployeeDetails } from './features/employees/employee-details/employee-details';
 
 
 
@@ -20,6 +21,14 @@ export const routes: Routes = [
   {
     path: 'employees/new',
     component: EmployeeForm
+  },
+  {
+  path: 'employees/:id/edit',
+  component: EmployeeForm
+  },
+  {
+  path: 'employees/:id',
+  component: EmployeeDetails
   },
   {
     path: 'employees',

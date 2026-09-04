@@ -1,0 +1,233 @@
+@if (employee(); as employee) {
+
+  <section class="details-page">
+
+    <!-- Header -->
+
+    <header class="page-header">
+
+      <div class="page-title">
+
+        <button
+          class="back-button"
+          type="button"
+          (click)="goBack()"
+        >
+          ←
+        </button>
+
+        <div>
+          <h1>Employee Details</h1>
+
+          <p>
+            View employee and salary information.
+          </p>
+        </div>
+
+      </div>
+
+      <a
+        class="primary-button"
+        [routerLink]="['/employees', employee.id, 'edit']"
+      >
+        Edit Employee
+      </a>
+
+    </header>
+
+
+    <!-- Employee Summary -->
+
+    <app-card>
+
+      <div class="employee-summary">
+
+        <div class="employee-avatar">
+          {{ getInitials(employee.name) }}
+        </div>
+
+        <div class="employee-summary-info">
+
+          <h2>
+            {{ employee.name }}
+          </h2>
+
+          <p>
+            {{ employee.designation }}
+          </p>
+
+          <span>
+            {{ employee.id }}
+          </span>
+
+        </div>
+
+        <span
+          class="status"
+          [class.inactive]="employee.status === 'Inactive'"
+        >
+          {{ employee.status }}
+        </span>
+
+      </div>
+
+    </app-card>
+
+
+    <!-- Information -->
+
+    <div class="details-grid">
+
+      <!-- Personal Information -->
+
+      <app-card title="Personal Information">
+
+        <div class="information-grid">
+
+          <div class="information-item">
+
+            <span>Email</span>
+
+            <strong>
+              {{ employee.email }}
+            </strong>
+
+          </div>
+
+          <div class="information-item">
+
+            <span>Phone</span>
+
+            <strong>
+              {{ employee.phone }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </app-card>
+
+
+      <!-- Employment Information -->
+
+      <app-card title="Employment Information">
+
+        <div class="information-grid">
+
+          <div class="information-item">
+
+            <span>Department</span>
+
+            <strong>
+              {{ employee.department }}
+            </strong>
+
+          </div>
+
+          <div class="information-item">
+
+            <span>Designation</span>
+
+            <strong>
+              {{ employee.designation }}
+            </strong>
+
+          </div>
+
+          <div class="information-item">
+
+            <span>Joining Date</span>
+
+            <strong>
+              {{ employee.joiningDate }}
+            </strong>
+
+          </div>
+
+          <div class="information-item">
+
+            <span>Status</span>
+
+            <strong>
+              {{ employee.status }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </app-card>
+
+
+      <!-- Salary Information -->
+
+      <app-card title="Salary Information">
+
+        <div class="salary-summary">
+
+          <span>
+            Annual Salary
+          </span>
+
+          <strong>
+            {{ formatSalary(employee.salary) }}
+          </strong>
+
+        </div>
+
+        <div class="salary-details">
+
+          <div class="salary-row">
+
+            <span>
+              Monthly Salary
+            </span>
+
+            <strong>
+              ₹{{ (employee.salary / 12).toFixed(0) }}
+            </strong>
+
+          </div>
+
+          <div class="salary-row">
+
+            <span>
+              Annual Salary
+            </span>
+
+            <strong>
+              ₹{{ employee.salary.toLocaleString('en-IN') }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </app-card>
+
+    </div>
+
+  </section>
+
+} @else {
+
+  <section class="not-found">
+
+    <h1>Employee not found</h1>
+
+    <p>
+      The employee you're looking for does not exist.
+    </p>
+
+    <button
+      class="primary-button"
+      type="button"
+      (click)="goBack()"
+    >
+      Back to Employees
+    </button>
+
+  </section>
+
+}

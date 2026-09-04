@@ -6,4 +6,6 @@ export interface Employee {
   designation: string;
   salary: number;
   status: 'Active' | 'Inactive';
+  phone: string;
+  joiningDate:string;
 }

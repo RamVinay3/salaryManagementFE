@@ -15,11 +15,17 @@
       </button>
 
       <div>
-        <h1>Add Employee</h1>
+       <h1>
+        {{ isEditMode ? 'Edit Employee' : 'Add Employee' }}
+      </h1>
 
-        <p>
-          Add a new employee and their salary information.
-        </p>
+      <p>
+        {{
+          isEditMode
+            ? 'Update employee and salary information.'
+            : 'Add a new employee and their salary information.'
+        }}
+      </p>
       </div>
 
     </div>
@@ -377,7 +383,7 @@
         class="primary-button"
         type="submit"
       >
-        Save Employee
+         {{ isEditMode ? 'Update Employee' : 'Save Employee' }}
       </button>
 
     </footer>

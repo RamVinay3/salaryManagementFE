@@ -4,7 +4,8 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EMPLOYEES } from '../../../core/data/employee.data';
 
 @Component({
   selector: 'app-employee-form',
@@ -18,6 +19,14 @@ export class EmployeeForm {
   private readonly formBuilder = inject(FormBuilder);
 
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+   readonly isEditMode =
+    this.route.snapshot.paramMap.has('id');
+
+  readonly employeeId =
+    this.route.snapshot.paramMap.get('id');
+
 
   readonly employeeForm = this.formBuilder.nonNullable.group({
 
@@ -162,5 +171,40 @@ export class EmployeeForm {
 
   cancel(): void {
     this.router.navigate(['/employees']);
+  }
+
+
+
+  constructor() {
+
+    if (!this.isEditMode || !this.employeeId) {
+      return;
+    }
+
+    const employee =
+      EMPLOYEES.find(
+        item => item.id === this.employeeId
+      );
+
+    if (!employee) {
+      this.router.navigate(['/employees']);
+
+      return;
+    }
+
+    const [firstName, ...lastNameParts] =
+      employee.name.split(' ');
+
+    this.employeeForm.patchValue({
+      firstName,
+      lastName: lastNameParts.join(' '),
+      email: employee.email,
+      phone: employee.phone,
+      department: employee.department,
+      designation: employee.designation,
+      joiningDate: employee.joiningDate,
+      salary: employee.salary,
+      status: employee.status
+    });
   }
 }
