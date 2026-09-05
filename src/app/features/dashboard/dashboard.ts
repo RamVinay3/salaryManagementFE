@@ -30,9 +30,30 @@ export class Dashboard {
   readonly error = signal('');
 
 readonly recentEmployees = signal<RecentEmployee[]>([]);
+
 readonly loadingRecentEmployees = signal(false);
 readonly employeeService = inject(EmployeeService);
 private readonly salaryService = inject(SalaryService);
+
+readonly selectedSalaryKey = signal('');
+
+readonly selectedSalaryStatistic = computed(() => {
+  const statistics = this.statistics()?.salaryStatisticsByCountry ?? [];
+  const selectedKey = this.selectedSalaryKey();
+
+  if (statistics.length === 0) {
+    return undefined;
+  }
+
+  if (!selectedKey) {
+    return statistics[0];
+  }
+
+  return statistics.find(
+    statistic =>
+      `${statistic.country}|${statistic.currency}` === selectedKey
+  ) ?? statistics[0];
+});
 
   readonly stats = computed(() => {
   const statistics = this.statistics();
@@ -67,8 +88,15 @@ private readonly salaryService = inject(SalaryService);
     },
     {
       title: 'Highest Salary',
-      value: '—',
-      change: 'Not available',
+      value: this.selectedSalaryStatistic()
+        ? this.formatSalary(
+            this.selectedSalaryStatistic()!.maximumSalary,
+            this.selectedSalaryStatistic()!.currency
+          )
+        : '—',
+      change: this.selectedSalaryStatistic()
+        ? `${this.selectedSalaryStatistic()!.country} · ${this.selectedSalaryStatistic()!.currency}`
+        : 'Not available',
       changeType: 'positive',
       icon: '📈'
     },
@@ -81,6 +109,10 @@ private readonly salaryService = inject(SalaryService);
     }
   ];
 });
+selectSalaryStatistic(event: Event): void {
+  const select = event.target as HTMLSelectElement;
+  this.selectedSalaryKey.set(select.value);
+}
 
   constructor() {
     this.loadStatistics();

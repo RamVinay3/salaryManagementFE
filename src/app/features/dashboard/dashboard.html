@@ -1,214 +1,151 @@
 @if (loading()) {
-
-  <div class="loading-state">
-    Loading dashboard...
-  </div>
-
+  <div class="loading-state">Loading dashboard...</div>
 } @else if (error()) {
-
   <div class="error-state">
     {{ error() }}
   </div>
-
 } @else if (statistics(); as statistics) {
-
   <section class="dashboard">
-
     <!-- Page Header -->
 
     <header class="page-header">
-
       <div>
         <h1>Dashboard</h1>
 
-        <p>
-          Overview of your organization's salary information.
-        </p>
+        <p>Overview of your organization's salary information.</p>
       </div>
 
       <div class="header-actions">
+        <button class="secondary-button" type="button">Export Report</button>
 
-        <button
-          class="secondary-button"
-          type="button"
-        >
-          Export Report
-        </button>
-
-        <a
-  class="primary-button"
-  routerLink="/employees/new"
-    >
-      Add Employee
-    </a>
-
+        <a class="primary-button" routerLink="/employees/new"> Add Employee </a>
       </div>
-
     </header>
-
 
     <!-- Statistics -->
 
     <section class="stats-grid">
-
       @for (stat of stats(); track stat.title) {
-
         <app-card>
-
           <div class="stat-card">
-
             <div class="stat-header">
-
               <div class="stat-icon">
                 {{ stat.icon }}
               </div>
 
-              <span
-                class="stat-change"
-                [class.negative]="stat.changeType === 'negative'"
-              >
-                {{ stat.change }}
-              </span>
-
+              @if (
+                stat.title === 'Highest Salary' && statistics.salaryStatisticsByCountry.length > 0
+              ) {
+                <select
+                  class="salary-selector"
+                  [value]="
+                    selectedSalaryKey() ||
+                    statistics.salaryStatisticsByCountry[0].country +
+                      '|' +
+                      statistics.salaryStatisticsByCountry[0].currency
+                  "
+                  (change)="selectSalaryStatistic($event)"
+                  aria-label="Select country and currency"
+                >
+                  @for (
+                    salary of statistics.salaryStatisticsByCountry;
+                    track salary.country + '|' + salary.currency
+                  ) {
+                    <option [value]="salary.country + '|' + salary.currency">
+                      {{ salary.country }} · {{ salary.currency }}
+                    </option>
+                  }
+                </select>
+              } @else {
+                <span class="stat-change" [class.negative]="stat.changeType === 'negative'">
+                  {{ stat.change }}
+                </span>
+              }
             </div>
 
             <div class="stat-body">
-
               <span class="stat-title">
                 {{ stat.title }}
               </span>
 
-             <strong class="stat-value">
-              {{ stat.value }}
-            </strong>
-
+              <strong class="stat-value">
+                {{ stat.value }}
+              </strong>
             </div>
-
           </div>
-
         </app-card>
-
       }
-
     </section>
-<!--Analytics-->
+    <!--Analytics-->
 
-   <section class="analytics-grid">
+    <section class="analytics-grid">
+      <!-- Employees by Department -->
 
-  <!-- Employees by Department -->
+      <app-card title="Employees by Department">
+        <div class="department-list">
+          @for (department of statistics.employeesByDepartment; track department.department) {
+            <div class="department-item">
+              <div class="department-header">
+                <span class="department-name">
+                  {{ department.department }}
+                </span>
 
-  <app-card title="Employees by Department">
+                <strong>
+                  {{ department.count }}
+                </strong>
+              </div>
 
-    <div class="department-list">
-
-      @for (
-        department of statistics.employeesByDepartment;
-        track department.department
-      ) {
-       
-        <div class="department-item">
-
-          <div class="department-header">
-
-            <span class="department-name">
-              {{ department.department }}
-            </span>
-
-            <strong>
-              {{ department.count }}
-            </strong>
-
-          </div>
-
-          <div class="department-bar">
-
-            <div
-              class="department-bar-fill"
-              [style.width.%]="
-                (department.count / statistics.totalEmployees) * 100
-              "
-            ></div>
-
-          </div>
-
+              <div class="department-bar">
+                <div
+                  class="department-bar-fill"
+                  [style.width.%]="(department.count / statistics.totalEmployees) * 100"
+                ></div>
+              </div>
+            </div>
+          }
         </div>
+      </app-card>
 
-      }
+      <!-- Average Salary -->
 
-    </div>
+      <app-card title="Average Salary">
+        <div class="average-salary-list">
+          @for (salary of statistics.averageSalaryByCurrency; track salary.currency) {
+            <div class="average-salary-item">
+              <div class="currency-badge">
+                {{ salary.currency }}
+              </div>
 
-  </app-card>
+              <div class="average-salary-details">
+                <span> Average annual salary </span>
 
-
-  <!-- Average Salary -->
-
-  <app-card title="Average Salary">
-
-    <div class="average-salary-list">
-
-      @for (
-        salary of statistics.averageSalaryByCurrency;
-        track salary.currency
-      ) {
-
-        <div class="average-salary-item">
-
-          <div class="currency-badge">
-            {{ salary.currency }}
-          </div>
-
-          <div class="average-salary-details">
-
-            <span>
-              Average annual salary
-            </span>
-
-            <strong>
-              {{ salary.averageSalary | number:'1.2-2' }}
-              {{ salary.currency }}
-            </strong>
-
-          </div>
-
+                <strong>
+                  {{ salary.averageSalary | number: '1.2-2' }}
+                  {{ salary.currency }}
+                </strong>
+              </div>
+            </div>
+          }
         </div>
-
-      }
-
-    </div>
-
-  </app-card>
-
-</section>
-
+      </app-card>
+    </section>
 
     <!-- Employees by Country -->
 
     <section class="employees-section">
-
       <app-card title="Employees by Country">
-
         <div class="table-container">
-
           <table>
-
             <thead>
-
               <tr>
                 <th>Country</th>
                 <th>Employees</th>
               </tr>
-
             </thead>
 
             <tbody>
-
-              @for (
-                country of statistics.employeesByCountry;
-                track country.country
-              ) {
-
+              @for (country of statistics.employeesByCountry; track country.country) {
                 <tr>
-
                   <td>
                     {{ country.country }}
                   </td>
@@ -216,34 +153,21 @@
                   <td class="salary">
                     {{ country.count }}
                   </td>
-
                 </tr>
-
               }
-
             </tbody>
-
           </table>
-
         </div>
-
       </app-card>
-
     </section>
-
 
     <!-- Recent Employees -->
 
     <section class="employees-section">
-
       <app-card title="Recent Employees">
-
         <div class="table-container">
-
           <table>
-
             <thead>
-
               <tr>
                 <th>Employee</th>
                 <th>Department</th>
@@ -251,40 +175,27 @@
                 <th>Status</th>
                 <th></th>
               </tr>
-
             </thead>
 
             <tbody>
-
-              @for (
-                employee of recentEmployees();
-                track employee.id
-              ) {
-
+              @for (employee of recentEmployees(); track employee.id) {
                 <tr>
-
                   <td>
-
                     <div class="employee-cell">
-
                       <div class="employee-avatar">
                         {{ employee.firstName.charAt(0) }}
                       </div>
 
                       <div>
-
                         <strong>
-                          {{ employee.firstName +' '+employee.lastName }}
+                          {{ employee.firstName + ' ' + employee.lastName }}
                         </strong>
 
                         <span>
                           {{ employee.id }}
                         </span>
-
                       </div>
-
                     </div>
-
                   </td>
 
                   <td>
@@ -292,60 +203,30 @@
                   </td>
 
                   <td class="salary">
-                    {{ formatSalary(employee.salary,employee.currency) }}
+                    {{ formatSalary(employee.salary, employee.currency) }}
                   </td>
 
                   <td>
-
-                    <span
-                      class="status"
-                      [class.inactive]="employee.status === 'Inactive'"
-                    >
+                    <span class="status" [class.inactive]="employee.status === 'Inactive'">
                       {{ employee.status }}
                     </span>
-
                   </td>
 
                   <td>
-
-                    <a
-                    class="view-button"
-                    [routerLink]="['/employees', employee.id]"
-                  >
-                    View
-                  </a>
-
+                    <a class="view-button" [routerLink]="['/employees', employee.id]"> View </a>
                   </td>
-
                 </tr>
-
               }
-
             </tbody>
-
           </table>
-
         </div>
 
         <div class="table-footer">
+          <span> Showing 5 of {{ statistics.totalEmployees }} employees </span>
 
-          <span>
-            Showing 5 of {{ statistics.totalEmployees }} employees
-          </span>
-
-          <a
-        class="secondary-button"
-        routerLink="/employees"
-      >
-        View All Employees
-      </a>
-
+          <a class="secondary-button" routerLink="/employees"> View All Employees </a>
         </div>
-
       </app-card>
-
     </section>
-
   </section>
-
 }
