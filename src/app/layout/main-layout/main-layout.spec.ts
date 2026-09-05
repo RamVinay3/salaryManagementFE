@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MainLayout } from './main-layout';
+import { ThemeService } from '../../core/services/theme';
+import { provideRouter } from '@angular/router';
 
 describe('MainLayout', () => {
   let component: MainLayout;
@@ -8,12 +10,30 @@ describe('MainLayout', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainLayout]
-    })
-    .compileComponents();
+      imports: [MainLayout],
+      
+      providers: [
+        provideRouter([]),
+        {
+          provide: ThemeService,
+          useValue: {
+            theme: () => 'light',
+            toggleTheme: () => {}
+          }
+        },
+        {
+          provide: ThemeService,
+          useValue: {
+            theme: () => 'light',
+            toggleTheme: () => {}
+          }
+        }
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MainLayout);
     component = fixture.componentInstance;
+
     await fixture.whenStable();
   });
 
