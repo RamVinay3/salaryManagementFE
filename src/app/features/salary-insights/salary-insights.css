@@ -1,0 +1,198 @@
+.salary-insights-page {
+  width: 100%;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+  color: var(--color-text);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin-top: 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.summary-value {
+  color: var(--color-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.salary-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.salary-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.salary-table th,
+.salary-table td {
+  padding: 0.875rem 0.75rem;
+  border-bottom: 0.0625rem solid var(--color-border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.salary-table th {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.salary-table td {
+  color: var(--color-text);
+  font-size: 0.8125rem;
+}
+
+.salary-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.currency-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.highest-paid-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  padding: 0 0.5rem;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.highest-paid-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.highest-paid-group {
+  padding: 1rem;
+  background: var(--color-background);
+  border: 0.0625rem solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.highest-paid-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.highest-paid-header > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.highest-paid-header strong {
+  color: var(--color-text);
+  font-size: 0.875rem;
+}
+
+.highest-paid-header span {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
+.highest-paid-employees {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.employee-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: var(--color-surface);
+  border: 0.0625rem solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.employee-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.employee-info strong {
+  color: var(--color-text);
+  font-size: 0.8125rem;
+}
+
+.employee-info span {
+  color: var(--color-text-secondary);
+  font-size: 0.6875rem;
+}
+
+.employee-row > strong {
+  color: var(--color-text);
+  font-size: 0.8125rem;
+}
+
+.state-container,
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 8rem;
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+}
+
+.error-state {
+  color: var(--color-danger);
+}
+
+@media (max-width: 48rem) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .highest-paid-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .employee-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -41,11 +41,11 @@ export class Sidebar {
       icon: '♙',
       route: '/employees'
     },
-    // {
-    //   label: 'Salary Updates',
-    //   icon: '₹',
-    //   route: '/salary-updates'
-    // },
+    {
+      label: 'Salary Insights',
+      icon: '₹',
+      route: '/salary-insights'
+    },
     // {
     //   label: 'Reports',
     //   icon: '▥',

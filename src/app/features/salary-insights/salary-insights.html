@@ -1,0 +1,213 @@
+<div class="salary-insights-page">
+
+  <header class="page-header">
+    <div>
+      <h1>Salary Insights</h1>
+      <p>Analyze salary distribution across countries and currencies.</p>
+    </div>
+  </header>
+
+  @if (loading()) {
+
+    <div class="state-container">
+      <span>Loading salary insights...</span>
+    </div>
+
+  } @else if (error()) {
+
+    <div class="state-container error-state">
+      <span>{{ error() }}</span>
+    </div>
+
+  } @else if (statistics(); as statistics) {
+
+    <section class="summary-grid">
+
+      <app-card title="Total Employees">
+        <div class="summary-value">
+          {{ statistics.totalEmployees }}
+        </div>
+      </app-card>
+
+      <app-card title="Countries">
+        <div class="summary-value">
+          {{ statistics.employeesByCountry.length }}
+        </div>
+      </app-card>
+
+      <app-card title="Currencies">
+        <div class="summary-value">
+          {{ statistics.averageSalaryByCurrency.length }}
+        </div>
+      </app-card>
+
+    </section>
+
+    <app-card title="Salary Statistics by Country">
+
+      @if (salaryStatistics().length > 0) {
+
+        <div class="salary-table-wrapper">
+
+          <table class="salary-table">
+
+            <thead>
+              <tr>
+                <th>Country</th>
+                <th>Currency</th>
+                <th>Employees</th>
+                <th>Minimum</th>
+                <th>Average</th>
+                <th>Maximum</th>
+                <th>Highest Paid</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              @for (
+                statistic of salaryStatistics();
+                track statistic.country + statistic.currency
+              ) {
+
+                <tr>
+
+                  <td>
+                    <strong>{{ statistic.country }}</strong>
+                  </td>
+
+                  <td>
+                    <span class="currency-badge">
+                      {{ statistic.currency }}
+                    </span>
+                  </td>
+
+                  <td>
+                    {{ statistic.employeeCount }}
+                  </td>
+
+                  <td>
+                    {{ formatSalary(
+                      statistic.minimumSalary,
+                      statistic.currency
+                    ) }}
+                  </td>
+
+                  <td>
+                    {{ formatSalary(
+                      statistic.averageSalary,
+                      statistic.currency
+                    ) }}
+                  </td>
+
+                  <td>
+                    <strong>
+                      {{ formatSalary(
+                        statistic.maximumSalary,
+                        statistic.currency
+                      ) }}
+                    </strong>
+                  </td>
+
+                  <td>
+                    <div class="highest-paid-count">
+                      {{ statistic.highestPaidEmployeeCount }}
+                    </div>
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      } @else {
+
+        <div class="empty-state">
+          No salary statistics available.
+        </div>
+
+      }
+
+    </app-card>
+
+    <app-card title="Highest-Paid Employees">
+
+      @if (salaryStatistics().length > 0) {
+
+        <div class="highest-paid-list">
+
+          @for (
+            statistic of salaryStatistics();
+            track statistic.country + statistic.currency
+          ) {
+
+            <div class="highest-paid-group">
+
+              <div class="highest-paid-header">
+
+                <div>
+                  <strong>{{ statistic.country }}</strong>
+                  <span>{{ statistic.currency }}</span>
+                </div>
+
+                <span>
+                  Maximum:
+                  {{ formatSalary(
+                    statistic.maximumSalary,
+                    statistic.currency
+                  ) }}
+                </span>
+
+              </div>
+
+              <div class="highest-paid-employees">
+
+                @for (
+                  employee of getHighestPaidEmployees(statistic);
+                  track employee.employeeId
+                ) {
+
+                  <div class="employee-row">
+
+                    <div class="employee-info">
+                      <strong>{{ employee.employeeName }}</strong>
+                      <span>{{ employee.employeeCode }}</span>
+                    </div>
+
+                    <strong>
+                      {{ formatSalary(
+                        employee.salary,
+                        employee.currency
+                      ) }}
+                    </strong>
+
+                  </div>
+
+                }
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="empty-state">
+          No highest-paid employees available.
+        </div>
+
+      }
+
+    </app-card>
+
+  }
+
+</div>
