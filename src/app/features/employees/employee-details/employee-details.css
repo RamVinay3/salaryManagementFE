@@ -429,3 +429,39 @@
 .details-page > app-card:last-of-type {
   margin-bottom: 0;
 }
+.salary-history {
+  width: 100%;
+}
+
+.salary-history-header,
+.salary-history-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+.salary-history-header {
+  padding: 0.75rem 0;
+  border-bottom: 0.0625rem solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.salary-history-row {
+  padding: 0.875rem 0;
+  border-bottom: 0.0625rem solid var(--color-border);
+  color: var(--color-text);
+  font-size: 0.875rem;
+}
+
+.salary-history-row:last-child {
+  border-bottom: 0;
+}
+
+.salary-history-row strong {
+  color: var(--color-primary);
+  font-weight: 600;
+}

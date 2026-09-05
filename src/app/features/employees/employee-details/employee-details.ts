@@ -42,6 +42,10 @@ export class EmployeeDetails {
   readonly loadingSalary =
     signal(false);
 
+ readonly salaryHistory = signal<Salary[]>([]);
+readonly loadingSalaryHistory = signal(false);
+readonly salaryHistoryError = signal('');
+
   readonly error =
     signal('');
 
@@ -61,7 +65,27 @@ export class EmployeeDetails {
 
     this.loadEmployee(id);
     this.loadSalary(id);
+    this.loadSalaryHistory(id);
   }
+  loadSalaryHistory(employeeId: number): void {
+  this.loadingSalaryHistory.set(true);
+  this.salaryHistoryError.set('');
+
+  this.salaryService.getSalaryHistory(employeeId).subscribe({
+    next: history => {
+      this.salaryHistory.set(history);
+      this.loadingSalaryHistory.set(false);
+    },
+    error: error => {
+      console.error('Failed to load salary history', error);
+      this.salaryHistory.set([]);
+      this.salaryHistoryError.set(
+        'Unable to load salary history.'
+      );
+      this.loadingSalaryHistory.set(false);
+    }
+  });
+}
 
   loadEmployee(id: number): void {
     this.loading.set(true);

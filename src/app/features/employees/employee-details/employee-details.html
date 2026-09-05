@@ -320,6 +320,64 @@
 
 </app-card>
 
+<!-- Salary History -->
+
+<app-card title="Salary History">
+
+  @if (loadingSalaryHistory()) {
+
+    <div class="loading-state">
+      Loading salary history...
+    </div>
+
+  } @else if (salaryHistoryError()) {
+
+    <div class="salary-error">
+      {{ salaryHistoryError() }}
+    </div>
+
+  } @else if (salaryHistory().length > 0) {
+
+    <div class="salary-history">
+
+      <div class="salary-history-header">
+        <span>Effective Date</span>
+        <span>Salary</span>
+        <span>Currency</span>
+      </div>
+
+      @for (salary of salaryHistory(); track salary.id) {
+
+        <div class="salary-history-row">
+
+          <span>
+            {{ salary.effectiveDate | date:'dd MMM yyyy' }}
+          </span>
+
+          <strong>
+            {{ salary.amount | number:'1.2-2' }}
+          </strong>
+
+          <span>
+            {{ salary.currency }}
+          </span>
+
+        </div>
+
+      }
+
+    </div>
+
+  } @else {
+
+    <div class="salary-empty">
+      No salary history available.
+    </div>
+
+  }
+
+</app-card>
+
 
   }
 

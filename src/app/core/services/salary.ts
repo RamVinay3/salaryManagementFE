@@ -32,4 +32,9 @@ export class SalaryService {
       salary
     );
   }
+  getSalaryHistory(employeeId: number): Observable<Salary[]> {
+  return this.http.get<Salary[]>(
+    `${this.apiUrl}/${employeeId}/salary/history`
+  );
+}
 }

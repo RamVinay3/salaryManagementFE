@@ -1,0 +1,191 @@
+<div class="salary-page">
+
+  <!-- Page Header -->
+
+  <header class="page-header">
+
+    <div class="page-header-left">
+
+      <a
+        class="back-button"
+        [routerLink]="['/employees', employeeId]"
+      >
+        ← Back to Employee
+      </a>
+
+      <div>
+        <h1>Manage Salary</h1>
+
+        <p>
+          Update salary information for this employee.
+        </p>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- Salary Form -->
+
+  <div class="salary-form-container">
+
+    @if (error()) {
+
+      <div class="form-error">
+        {{ error() }}
+      </div>
+
+    }
+
+    @if (success()) {
+
+      <div class="form-success">
+        {{ success() }}
+      </div>
+
+    }
+
+    <form
+      [formGroup]="salaryForm"
+      (ngSubmit)="saveSalary()"
+      novalidate
+    >
+
+      <!-- Amount -->
+
+      <div class="form-group">
+
+        <label for="amount">
+          Salary Amount
+        </label>
+
+        <input
+          id="amount"
+          type="number"
+          formControlName="amount"
+          min="0"
+          step="0.01"
+          placeholder="Enter salary amount"
+        />
+
+        @if (
+          salaryForm.controls.amount.touched &&
+          salaryForm.controls.amount.invalid
+        ) {
+
+          <span class="field-error">
+
+            @if (salaryForm.controls.amount.hasError('required')) {
+              Salary amount is required.
+            }
+
+            @if (salaryForm.controls.amount.hasError('min')) {
+              Salary amount cannot be negative.
+            }
+
+          </span>
+
+        }
+
+      </div>
+
+
+      <!-- Currency -->
+
+      <div class="form-group">
+
+        <label for="currency">
+          Currency
+        </label>
+
+        <input
+          id="currency"
+          type="text"
+          formControlName="currency"
+          maxlength="3"
+          placeholder="INR"
+        />
+
+        @if (
+          salaryForm.controls.currency.touched &&
+          salaryForm.controls.currency.invalid
+        ) {
+
+          <span class="field-error">
+
+            @if (salaryForm.controls.currency.hasError('required')) {
+              Currency is required.
+            }
+
+            @if (salaryForm.controls.currency.hasError('pattern')) {
+              Currency must be a 3-letter uppercase code.
+            }
+
+          </span>
+
+        }
+
+      </div>
+
+
+      <!-- Effective Date -->
+
+      <div class="form-group">
+
+        <label for="effectiveDate">
+          Effective Date
+        </label>
+
+        <input
+          id="effectiveDate"
+          type="date"
+          formControlName="effectiveDate"
+        />
+
+        @if (
+          salaryForm.controls.effectiveDate.touched &&
+          salaryForm.controls.effectiveDate.invalid
+        ) {
+
+          <span class="field-error">
+            Effective date is required.
+          </span>
+
+        }
+
+      </div>
+
+
+      <!-- Actions -->
+
+      <div class="form-actions">
+
+        <a
+          class="secondary-button"
+          [routerLink]="['/employees', employeeId]"
+        >
+          Cancel
+        </a>
+
+        <button
+          class="primary-button"
+          type="submit"
+          [disabled]="saving()"
+        >
+
+          @if (saving()) {
+            Saving...
+          } @else {
+            Save Salary
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

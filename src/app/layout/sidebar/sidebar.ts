@@ -41,24 +41,24 @@ export class Sidebar {
       icon: '♙',
       route: '/employees'
     },
-    {
-      label: 'Salary Updates',
-      icon: '₹',
-      route: '/salary-updates'
-    },
-    {
-      label: 'Reports',
-      icon: '▥',
-      route: '/reports'
-    }
+    // {
+    //   label: 'Salary Updates',
+    //   icon: '₹',
+    //   route: '/salary-updates'
+    // },
+    // {
+    //   label: 'Reports',
+    //   icon: '▥',
+    //   route: '/reports'
+    // }
   ];
 
   settingsItems: NavigationItem[] = [
-    {
-      label: 'Settings',
-      icon: '⚙',
-      route: '/settings'
-    }
+    // {
+    //   label: 'Settings',
+    //   icon: '⚙',
+    //   route: '/settings'
+    // }
   ];
 
   toggleTheme(): void {

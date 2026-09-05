@@ -1,315 +1,351 @@
-<section class="dashboard">
+@if (loading()) {
 
-  <!-- Page Header -->
+  <div class="loading-state">
+    Loading dashboard...
+  </div>
 
-  <header class="page-header">
+} @else if (error()) {
 
-    <div>
-      <h1>Dashboard</h1>
+  <div class="error-state">
+    {{ error() }}
+  </div>
 
-      <p>
-        Overview of your organization's salary information.
-      </p>
-    </div>
+} @else if (statistics(); as statistics) {
 
-    <div class="header-actions">
+  <section class="dashboard">
 
-      <button class="secondary-button">
-        Export Report
-      </button>
+    <!-- Page Header -->
 
-      <button class="primary-button">
-        Add Employee
-      </button>
+    <header class="page-header">
 
-    </div>
+      <div>
+        <h1>Dashboard</h1>
 
-  </header>
+        <p>
+          Overview of your organization's salary information.
+        </p>
+      </div>
+
+      <div class="header-actions">
+
+        <button
+          class="secondary-button"
+          type="button"
+        >
+          Export Report
+        </button>
+
+        <a
+  class="primary-button"
+  routerLink="/employees/new"
+    >
+      Add Employee
+    </a>
+
+      </div>
+
+    </header>
 
 
-  <!-- Statistics -->
+    <!-- Statistics -->
 
-  <section class="stats-grid">
+    <section class="stats-grid">
 
-    @for (stat of stats; track stat.title) {
+      @for (stat of stats(); track stat.title) {
 
-      <app-card>
+        <app-card>
 
-        <div class="stat-card">
+          <div class="stat-card">
 
-          <div class="stat-header">
+            <div class="stat-header">
 
-            <div class="stat-icon">
-              {{ stat.icon }}
+              <div class="stat-icon">
+                {{ stat.icon }}
+              </div>
+
+              <span
+                class="stat-change"
+                [class.negative]="stat.changeType === 'negative'"
+              >
+                {{ stat.change }}
+              </span>
+
             </div>
 
-            <span
-              class="stat-change"
-              [class.negative]="stat.changeType === 'negative'"
-            >
-              {{ stat.change }}
-            </span>
+            <div class="stat-body">
+
+              <span class="stat-title">
+                {{ stat.title }}
+              </span>
+
+             <strong class="stat-value">
+              {{ stat.value }}
+            </strong>
+
+            </div>
 
           </div>
 
-          <div class="stat-body">
+        </app-card>
 
-            <span class="stat-title">
-              {{ stat.title }}
+      }
+
+    </section>
+<!--Analytics-->
+
+   <section class="analytics-grid">
+
+  <!-- Employees by Department -->
+
+  <app-card title="Employees by Department">
+
+    <div class="department-list">
+
+      @for (
+        department of statistics.employeesByDepartment;
+        track department.departmentName
+      ) {
+
+        <div class="department-item">
+
+          <div class="department-header">
+
+            <span class="department-name">
+              {{ department.departmentName }}
             </span>
 
-            <strong class="stat-value">
-              {{ stat.value }}
+            <strong>
+              {{ department.count }}
+            </strong>
+
+          </div>
+
+          <div class="department-bar">
+
+            <div
+              class="department-bar-fill"
+              [style.width.%]="
+                (department.count / statistics.totalEmployees) * 100
+              "
+            ></div>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </app-card>
+
+
+  <!-- Average Salary -->
+
+  <app-card title="Average Salary">
+
+    <div class="average-salary-list">
+
+      @for (
+        salary of statistics.averageSalaryByCurrency;
+        track salary.currency
+      ) {
+
+        <div class="average-salary-item">
+
+          <div class="currency-badge">
+            {{ salary.currency }}
+          </div>
+
+          <div class="average-salary-details">
+
+            <span>
+              Average annual salary
+            </span>
+
+            <strong>
+              {{ salary.averageSalary | number:'1.2-2' }}
+              {{ salary.currency }}
             </strong>
 
           </div>
 
         </div>
 
-      </app-card>
+      }
 
-    }
+    </div>
 
-  </section>
-
-
-  <!-- Analytics -->
-
-  <section class="analytics-grid">
-
-    <app-card title="Salary Distribution">
-
-      <div class="chart-placeholder">
-
-        <div class="donut">
-
-          <div class="donut-center">
-            <strong>10K</strong>
-            <span>Employees</span>
-          </div>
-
-        </div>
-
-        <div class="legend">
-
-          <div class="legend-item">
-            <span class="legend-dot junior"></span>
-            <span>0 - ₹5L</span>
-            <strong>32%</strong>
-          </div>
-
-          <div class="legend-item">
-            <span class="legend-dot mid"></span>
-            <span>₹5L - ₹10L</span>
-            <strong>41%</strong>
-          </div>
-
-          <div class="legend-item">
-            <span class="legend-dot senior"></span>
-            <span>₹10L - ₹20L</span>
-            <strong>21%</strong>
-          </div>
-
-          <div class="legend-item">
-            <span class="legend-dot executive"></span>
-            <span>₹20L+</span>
-            <strong>6%</strong>
-          </div>
-
-        </div>
-
-      </div>
-
-    </app-card>
-
-
-    <app-card title="Average Salary Trend">
-
-      <div class="trend-chart">
-
-        <div class="chart-value">
-          ₹8.68L
-        </div>
-
-        <div class="chart-period">
-          Average annual salary
-        </div>
-
-        <div class="line-chart">
-
-          <svg
-            viewBox="0 0 600 220"
-            preserveAspectRatio="none"
-            aria-label="Average salary trend"
-          >
-
-            <line
-              x1="0"
-              y1="180"
-              x2="600"
-              y2="180"
-              class="grid-line"
-            />
-
-            <line
-              x1="0"
-              y1="120"
-              x2="600"
-              y2="120"
-              class="grid-line"
-            />
-
-            <line
-              x1="0"
-              y1="60"
-              x2="600"
-              y2="60"
-              class="grid-line"
-            />
-
-            <polyline
-              points="
-                0,170
-                80,155
-                160,162
-                240,125
-                320,138
-                400,100
-                480,85
-                600,50
-              "
-              class="trend-line"
-            />
-
-          </svg>
-
-        </div>
-
-        <div class="chart-labels">
-          <span>Jan</span>
-          <span>Mar</span>
-          <span>May</span>
-          <span>Jul</span>
-          <span>Sep</span>
-          <span>Nov</span>
-        </div>
-
-      </div>
-
-    </app-card>
-
-  </section>
-
-
-  <!-- Recent Employees -->
-
-  <section class="employees-section">
-
-    <app-card title="Recent Employees">
-
-      <div class="table-container">
-
-        <table>
-
-          <thead>
-
-            <tr>
-              <th>Employee</th>
-              <th>Department</th>
-              <th>Salary</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            @for (
-              employee of recentEmployees;
-              track employee.id
-            ) {
-
-              <tr>
-
-                <td>
-
-                  <div class="employee-cell">
-
-                    <div class="employee-avatar">
-                      {{ employee.name.charAt(0) }}
-                    </div>
-
-                    <div>
-
-                      <strong>
-                        {{ employee.name }}
-                      </strong>
-
-                      <span>
-                        {{ employee.id }}
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                </td>
-
-                <td>
-                  {{ employee.department }}
-                </td>
-
-                <td class="salary">
-                  {{ formatSalary(employee.salary) }}
-                </td>
-
-                <td>
-
-                  <span
-                    class="status"
-                    [class.inactive]="employee.status === 'Inactive'"
-                  >
-                    {{ employee.status }}
-                  </span>
-
-                </td>
-
-                <td>
-
-                  <button
-                    class="view-button"
-                    type="button"
-                  >
-                    View
-                  </button>
-
-                </td>
-
-              </tr>
-
-            }
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-      <div class="table-footer">
-
-        <span>
-          Showing 5 of 10,000 employees
-        </span>
-
-        <button class="secondary-button">
-          View All Employees
-        </button>
-
-      </div>
-
-    </app-card>
-
-  </section>
+  </app-card>
 
 </section>
+
+
+    <!-- Employees by Country -->
+
+    <section class="employees-section">
+
+      <app-card title="Employees by Country">
+
+        <div class="table-container">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Country</th>
+                <th>Employees</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              @for (
+                country of statistics.employeesByCountry;
+                track country.country
+              ) {
+
+                <tr>
+
+                  <td>
+                    {{ country.country }}
+                  </td>
+
+                  <td class="salary">
+                    {{ country.count }}
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </app-card>
+
+    </section>
+
+
+    <!-- Recent Employees -->
+
+    <section class="employees-section">
+
+      <app-card title="Recent Employees">
+
+        <div class="table-container">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Salary</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              @for (
+                employee of recentEmployees();
+                track employee.id
+              ) {
+
+                <tr>
+
+                  <td>
+
+                    <div class="employee-cell">
+
+                      <div class="employee-avatar">
+                        {{ employee.firstName.charAt(0) }}
+                      </div>
+
+                      <div>
+
+                        <strong>
+                          {{ employee.firstName +' '+employee.lastName }}
+                        </strong>
+
+                        <span>
+                          {{ employee.id }}
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                  </td>
+
+                  <td>
+                    {{ employee.department }}
+                  </td>
+
+                  <td class="salary">
+                    {{ formatSalary(employee.salary,employee.currency) }}
+                  </td>
+
+                  <td>
+
+                    <span
+                      class="status"
+                      [class.inactive]="employee.status === 'Inactive'"
+                    >
+                      {{ employee.status }}
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    <a
+                    class="view-button"
+                    [routerLink]="['/employees', employee.id]"
+                  >
+                    View
+                  </a>
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        <div class="table-footer">
+
+          <span>
+            Showing 5 of {{ statistics.totalEmployees }} employees
+          </span>
+
+          <a
+        class="secondary-button"
+        routerLink="/employees"
+      >
+        View All Employees
+      </a>
+
+        </div>
+
+      </app-card>
+
+    </section>
+
+  </section>
+
+}
