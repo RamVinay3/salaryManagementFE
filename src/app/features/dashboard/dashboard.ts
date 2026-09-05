@@ -36,6 +36,24 @@ readonly employeeService = inject(EmployeeService);
 private readonly salaryService = inject(SalaryService);
 
 readonly selectedSalaryKey = signal('');
+readonly selectedAverageCurrency = signal('');
+
+readonly selectedAverageSalary = computed(() => {
+  const salaries = this.statistics()?.averageSalaryByCurrency ?? [];
+  const selectedCurrency = this.selectedAverageCurrency();
+
+  if (salaries.length === 0) {
+    return undefined;
+  }
+
+  if (!selectedCurrency) {
+    return salaries[0];
+  }
+
+  return salaries.find(
+    salary => salary.currency === selectedCurrency
+  ) ?? salaries[0];
+});
 
 readonly selectedSalaryStatistic = computed(() => {
   const statistics = this.statistics()?.salaryStatisticsByCountry ?? [];
@@ -62,10 +80,7 @@ readonly selectedSalaryStatistic = computed(() => {
     return [];
   }
 
-  const averageSalary =
-    statistics.averageSalaryByCurrency.length > 0
-      ? statistics.averageSalaryByCurrency[0]
-      : undefined;
+  
 
   return [
     {
@@ -75,17 +90,20 @@ readonly selectedSalaryStatistic = computed(() => {
       changeType: 'positive',
       icon: '👥'
     },
-    {
-      title: 'Average Salary',
-      value: averageSalary
-        ? `${this.formatSalary(
-            averageSalary.averageSalary,averageSalary.currency
-          )} `
-        : '—',
-      change: 'Current',
-      changeType: 'positive',
-      icon: '💰'
-    },
+   {
+    title: 'Average Salary',
+    value: this.selectedAverageSalary()
+      ? this.formatSalary(
+          this.selectedAverageSalary()!.averageSalary,
+          this.selectedAverageSalary()!.currency
+        )
+      : '—',
+    change: this.selectedAverageSalary()
+      ? this.selectedAverageSalary()!.currency
+      : 'Not available',
+    changeType: 'positive',
+    icon: '💰'
+  },
     {
       title: 'Highest Salary',
       value: this.selectedSalaryStatistic()
@@ -113,7 +131,10 @@ selectSalaryStatistic(event: Event): void {
   const select = event.target as HTMLSelectElement;
   this.selectedSalaryKey.set(select.value);
 }
-
+selectAverageSalary(event: Event): void {
+  const select = event.target as HTMLSelectElement;
+  this.selectedAverageCurrency.set(select.value);
+}
   constructor() {
     this.loadStatistics();
      this.loadRecentEmployees();

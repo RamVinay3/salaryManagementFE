@@ -56,6 +56,23 @@
                     </option>
                   }
                 </select>
+              } @else if (
+                stat.title === 'Average Salary' && statistics.averageSalaryByCurrency.length > 0
+              ) {
+                <select
+                  class="salary-selector"
+                  [value]="
+                    selectedAverageCurrency() || statistics.averageSalaryByCurrency[0].currency
+                  "
+                  (change)="selectAverageSalary($event)"
+                  aria-label="Select salary currency"
+                >
+                  @for (salary of statistics.averageSalaryByCurrency; track salary.currency) {
+                    <option [value]="salary.currency">
+                      {{ salary.currency }}
+                    </option>
+                  }
+                </select>
               } @else {
                 <span class="stat-change" [class.negative]="stat.changeType === 'negative'">
                   {{ stat.change }}
