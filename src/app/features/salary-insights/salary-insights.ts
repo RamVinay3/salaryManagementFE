@@ -1,5 +1,4 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
 
 import { Card } from '../../shared/components/card/card';
 import { StatisticsService } from '../../core/services/statistics';
@@ -11,7 +10,7 @@ import {
 @Component({
   selector: 'app-salary-insights',
   standalone: true,
-  imports: [Card, DecimalPipe],
+  imports: [Card],
   templateUrl: './salary-insights.html',
   styleUrl: './salary-insights.css'
 })
