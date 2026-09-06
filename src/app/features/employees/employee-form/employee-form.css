@@ -253,12 +253,15 @@
    Error
    ============================================ */
 
-.error-message {
+.field-error {
   color: var(--color-danger);
 
   font-size: 0.6875rem;
 }
-
+.form-field input.ng-invalid.ng-touched,
+.form-field select.ng-invalid.ng-touched {
+  border-color: var(--color-danger);
+}
 
 /* ============================================
    Actions

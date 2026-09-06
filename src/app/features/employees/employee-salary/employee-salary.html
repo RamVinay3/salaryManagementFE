@@ -99,13 +99,16 @@
           Currency
         </label>
 
-        <input
-          id="currency"
-          type="text"
-          formControlName="currency"
-          maxlength="3"
-          placeholder="INR"
-        />
+       <select
+        id="currency"
+        formControlName="currency"
+      >
+        <option value="INR">INR — Indian Rupee</option>
+        <option value="USD">USD — US Dollar</option>
+        <option value="GBP">GBP — British Pound</option>
+        <option value="EUR">EUR — Euro</option>
+        <option value="SGD">SGD — Singapore Dollar</option>
+      </select>
 
         @if (
           salaryForm.controls.currency.touched &&
